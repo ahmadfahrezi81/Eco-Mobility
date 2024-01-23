@@ -1,12 +1,13 @@
 import React from "react";
 import { TouchableOpacity, ActivityIndicator, Text } from "react-native";
+import { COLORS } from "../../styles";
 
 const LoadButton = ({ onPress, loading, text }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
             style={{
-                backgroundColor: "#058C42",
+                backgroundColor: COLORS.GREEN,
                 padding: 16,
                 borderRadius: 10,
                 alignItems: "center",

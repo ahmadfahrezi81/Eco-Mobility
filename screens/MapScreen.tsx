@@ -128,7 +128,16 @@ export default function MapScreen({ navigation }) {
                     await setDoc(userRef, {});
                 }
 
-                await addDoc(trackingActivitiesRef, {
+                // await addDoc(trackingActivitiesRef, {
+                //     distance,
+                //     startTime,
+                //     endTime,
+                //     vehicle,
+                //     coordinates,
+                //     xp: 10,
+                // });
+
+                const newDocRef = await addDoc(trackingActivitiesRef, {
                     distance,
                     startTime,
                     endTime,
@@ -137,18 +146,23 @@ export default function MapScreen({ navigation }) {
                     xp: 10,
                 });
 
+                const docSnap = await getDoc(newDocRef);
+                const data = docSnap.data();
+
                 const leaderboardRef = doc(FIRESTORE_DB, "leaderboard", userId);
                 await updateDoc(leaderboardRef, {
                     xp: increment(10),
                 });
                 //later on I need a way to calculate the xp and emission using helper class
 
-                console.log("[DATA SENT]");
+                console.log("[DATA SENT]", trackingActivitiesRef);
 
                 setLoading(false);
 
                 setTimeout(() => {
-                    navigation.goBack();
+                    // navigation.goBack();
+
+                    navigation.navigate("ReportSummary", { data: data });
                 }, 100);
             }
         } catch (error) {

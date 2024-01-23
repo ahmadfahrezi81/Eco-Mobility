@@ -1,21 +1,21 @@
 import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { COLORS, styles } from "../../styles";
-import { Coordinate, TrackingActivity } from "../../types";
+import { COLORS, styles } from "../styles";
+import { Coordinate, TrackingActivity } from "../types";
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
 import {
     capitalizeFirstLetter,
     getCO2EmissionRate,
     getMapRegion,
     getTimeDifference,
-} from "../../helpers/helpers";
+} from "../helpers/helpers";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SubNavHeader from "../../components/headers/SubNavHeader";
-import CustomMarker, { getMarkerIcon } from "../../components/map/CustomMarker";
+import SubNavHeader from "../components/headers/SubNavHeader";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { getMarkerIcon } from "../components/map/CustomMarker";
 
-export default function DetailScreen({ route, navigation }: any) {
+export default function ReportSummary({ route, navigation }: any) {
     const { data }: { data: TrackingActivity } = route.params;
 
     const mapRef = useRef<MapView>(null);
@@ -23,12 +23,60 @@ export default function DetailScreen({ route, navigation }: any) {
     return (
         <SafeAreaView
             edges={["right", "left", "top", "bottom"]}
-            style={styles.container}
+            style={[styles.container]}
         >
-            <SubNavHeader
+            {/* <SubNavHeader
                 navigation={navigation}
                 subNavStyle={{ marginLeft: -10 }}
-            />
+            /> */}
+
+            <View
+                style={[
+                    {
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 5,
+                        marginTop: 20,
+                        marginBottom: 20,
+                    },
+                ]}
+            >
+                <View>
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            fontWeight: "600",
+                            color: COLORS.BLACK,
+                        }}
+                    >
+                        Thank you for tracking
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: 24,
+                            fontWeight: "800",
+                            color: COLORS.BLACK,
+                        }}
+                    >
+                        Your Report Summary
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+                    <View
+                        style={{
+                            backgroundColor: COLORS.BLACK,
+                            height: 35,
+                            width: 35,
+                            borderRadius: 50,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <FontAwesome5 name="times" size={18} color="white" />
+                    </View>
+                </TouchableOpacity>
+            </View>
 
             {data && (
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -43,7 +91,6 @@ export default function DetailScreen({ route, navigation }: any) {
                             style={{
                                 flex: 1,
                                 borderRadius: 15,
-                                // borderWidth: 2,
                             }}
                             region={getMapRegion(data.coordinates)}
                             ref={mapRef}
@@ -62,7 +109,7 @@ export default function DetailScreen({ route, navigation }: any) {
                             >
                                 <FontAwesome5
                                     name="map-marker-alt"
-                                    size={40}
+                                    size={35}
                                     color={COLORS.DARKGREY}
                                 />
                             </Marker>
@@ -76,7 +123,7 @@ export default function DetailScreen({ route, navigation }: any) {
                             >
                                 <FontAwesome5
                                     name="map-marker-alt"
-                                    size={40}
+                                    size={35}
                                     color={COLORS.GREEN}
                                 />
                             </Marker>
@@ -136,6 +183,7 @@ export default function DetailScreen({ route, navigation }: any) {
                                 />
                             </View>
                         </View>
+
                         {/* Emission */}
                         <View
                             style={{
@@ -195,11 +243,12 @@ export default function DetailScreen({ route, navigation }: any) {
                             >
                                 <MaterialCommunityIcons
                                     name="molecule-co2"
-                                    size={32}
+                                    size={30}
                                     color={COLORS.GREEN}
                                 />
                             </View>
                         </View>
+
                         {/* Distance */}
                         <View
                             style={{
@@ -214,7 +263,7 @@ export default function DetailScreen({ route, navigation }: any) {
                         >
                             <View style={{ gap: 8 }}>
                                 <Text style={{ fontSize: 18 }}>
-                                    Distance Traveled
+                                    Distance Tracked
                                 </Text>
 
                                 <View
@@ -254,13 +303,14 @@ export default function DetailScreen({ route, navigation }: any) {
                                     justifyContent: "center",
                                 }}
                             >
-                                <FontAwesome5
-                                    name="route"
+                                <MaterialCommunityIcons
+                                    name="map-marker-distance"
                                     size={24}
                                     color={COLORS.GREEN}
                                 />
                             </View>
                         </View>
+
                         {/* Time */}
                         <View
                             style={{
@@ -323,6 +373,7 @@ export default function DetailScreen({ route, navigation }: any) {
                                 />
                             </View>
                         </View>
+
                         {/* XP */}
                         <View
                             style={{

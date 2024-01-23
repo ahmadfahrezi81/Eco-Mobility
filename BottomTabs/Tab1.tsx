@@ -99,9 +99,9 @@ export default function Tab1({ navigation }) {
                     setTotalDistance(distance);
                     setTotalEmission(emission);
 
-                    console.log(trackingActivities);
+                    // console.log(trackingActivities);
 
-                    console.log(totalDistance);
+                    // console.log(totalDistance);
 
                     setTrackingActivities(trackingActivities);
                     setLoading(false);

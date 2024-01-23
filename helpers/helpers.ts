@@ -16,6 +16,32 @@ export const getTimeDifference = (start: Date, end: Date) => {
     return `${diffInHours}:${format(diffInMinutes)}:${format(diffInSeconds)}`;
 };
 
+// export const getMapRegion = (coordinates: Coordinate[]) => {
+//     if (coordinates.length === 0) {
+//         return {
+//             latitude: 0,
+//             longitude: 0,
+//             latitudeDelta: 0.0922,
+//             longitudeDelta: 0.0421,
+//         };
+//     }
+
+//     const minLat = Math.min(...coordinates.map((coord) => coord.latitude));
+//     const maxLat = Math.max(...coordinates.map((coord) => coord.latitude));
+//     const minLng = Math.min(...coordinates.map((coord) => coord.longitude));
+//     const maxLng = Math.max(...coordinates.map((coord) => coord.longitude));
+
+//     const latitudeDelta = maxLat - minLat;
+//     const longitudeDelta = maxLng - minLng + 0.002;
+
+//     return {
+//         latitude: (maxLat + minLat) / 2,
+//         longitude: (maxLng + minLng) / 2,
+//         latitudeDelta,
+//         longitudeDelta,
+//     };
+// };
+
 export const getMapRegion = (coordinates: Coordinate[]) => {
     if (coordinates.length === 0) {
         return {
@@ -31,8 +57,8 @@ export const getMapRegion = (coordinates: Coordinate[]) => {
     const minLng = Math.min(...coordinates.map((coord) => coord.longitude));
     const maxLng = Math.max(...coordinates.map((coord) => coord.longitude));
 
-    const latitudeDelta = maxLat - minLat;
-    const longitudeDelta = maxLng - minLng + 0.002;
+    const latitudeDelta = (maxLat - minLat) * 1.3; // Add 10% padding
+    const longitudeDelta = (maxLng - minLng + 0.002) * 1.3; // Add 10% padding
 
     return {
         latitude: (maxLat + minLat) / 2,

@@ -48,7 +48,7 @@ export default function Tab3({ navigation }) {
                         };
                     });
 
-                    console.log(leaderboardData);
+                    // console.log(leaderboardData);
 
                     setLeaderboard(leaderboardData);
                     setUserId(userId);
