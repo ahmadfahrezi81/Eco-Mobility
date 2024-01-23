@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Marker } from "react-native-maps";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { COLORS } from "../../styles";
 
 interface CustomMarkerProps {
     coordinate: {
@@ -43,7 +44,7 @@ const CustomMarker: React.FC<CustomMarkerProps> = ({
                     width: 40,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: "black",
+                    backgroundColor: COLORS.GREEN,
                     borderRadius: 50,
                 }}
             >

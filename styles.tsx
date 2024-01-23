@@ -6,8 +6,10 @@ export const COLORS = {
     // GREEN: "#058C42",
     GREEN: "#074F57",
     // GREEN: "#075723",
+    JADEGREEN: "#0EAD69",
+    SEAGREEN: "#15A466",
     GREY: "#D9D9D9",
-    DARKGREY: "#C0C0C0",
+    DARKGREY: "#A4A4A4",
     BLACK: "#040404",
     // BLACK: "#001524",
 };
@@ -26,7 +28,7 @@ export const styles = StyleSheet.create({
         fontWeight: "900",
         marginBottom: 30,
         marginTop: 40,
-        color: COLORS.GREEN,
+        color: COLORS.BLACK,
     },
     subtitle: {
         fontSize: 28,

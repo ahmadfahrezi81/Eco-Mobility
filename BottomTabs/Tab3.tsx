@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import { Leaderboard, TrackingActivity } from "../types";
 import { FIRESTORE_DB } from "../firebaseConfig";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { styles } from "../styles";
+import { COLORS, styles } from "../styles";
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Entypo, FontAwesome5 } from "@expo/vector-icons";
+import {
+    Entypo,
+    FontAwesome5,
+    MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 interface LeaderboardItemProps {
     item: Leaderboard;
@@ -17,6 +21,8 @@ export default function Tab3({ navigation }) {
     const [leaderboard, setLeaderboard] = useState<Leaderboard[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [userId, setUserId] = useState<string>("");
+
+    const avatar = "https://via.placeholder.com/150";
 
     useFocusEffect(
         useCallback(() => {
@@ -72,25 +78,56 @@ export default function Tab3({ navigation }) {
                     justifyContent: "space-between",
                     marginBottom: 10,
                     borderWidth: userId === item.userId ? 2 : 0,
+                    borderColor: COLORS.GREEN,
                 }}
             >
-                <View
+                {/* <View
                     style={{
                         flexDirection: "row",
                         gap: 15,
                         alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                > */}
+
+                <View
+                    style={{
+                        flexDirection: "row",
+                        gap: 10,
+                        alignItems: "center",
+                        justifyContent: "space-between",
                     }}
                 >
                     <Text style={{ fontSize: 18 }}>{item.ranking}</Text>
+
+                    <Image
+                        style={{ width: 50, height: 50, borderRadius: 25 }}
+                        source={{ uri: avatar }}
+                    />
                     <Text style={{ fontSize: 14, fontWeight: "600" }}>
                         {item.name}
                     </Text>
-                    <Text>{item.xp} XP</Text>
                 </View>
 
-                {userId === item.userId && (
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 2,
+                    }}
+                >
+                    <Text>{item.xp}</Text>
+                    <MaterialCommunityIcons
+                        name="star-four-points"
+                        size={20}
+                        color={COLORS.GREEN}
+                    />
+                </View>
+                {/* </View> */}
+
+                {/* {userId === item.userId && (
                     <FontAwesome5 name="dot-circle" size={16} color="black" />
-                )}
+                )} */}
             </View>
         );
     };

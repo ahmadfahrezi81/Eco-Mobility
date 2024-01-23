@@ -6,6 +6,7 @@ import Tab3 from "../BottomTabs/Tab3";
 import Tab4 from "../BottomTabs/Tab4";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Platform } from "react-native";
+import { COLORS } from "../styles";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,7 +15,7 @@ export default function HomeScreen() {
         Platform.OS === "android"
             ? {
                   tabBarStyle: {
-                      backgroundColor: "#F2F4F2",
+                      backgroundColor: COLORS.OFFWHITE,
                       paddingVertical: 10,
                       paddingBottom: 10,
                       height: 65,
@@ -22,7 +23,7 @@ export default function HomeScreen() {
               }
             : {
                   tabBarStyle: {
-                      backgroundColor: "#F2F4F2",
+                      backgroundColor: COLORS.OFFWHITE,
                   },
               };
 
@@ -37,8 +38,8 @@ export default function HomeScreen() {
                 // tabBarIconStyle: {
                 //     height: 30, // Add this to change icon size
                 // },
-                // tabBarActiveTintColor: "#FF6347",
-                // tabBarInactiveTintColor: "#A9A9A9",
+                tabBarActiveTintColor: COLORS.GREEN,
+                // tabBarInactiveTintColor: COLORS.DARKGREY,
             }}
         >
             <Tab.Screen
