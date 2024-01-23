@@ -38,7 +38,7 @@ const InputWithLabel = ({
                     paddingHorizontal: 15,
                     backgroundColor: disabled ? COLORS.GREY : COLORS.WHITE,
                     borderColor: isFocused ? COLORS.GREEN : COLORS.WHITE,
-                    borderWidth: 2,
+                    borderWidth: disabled ? 0 : 2,
                     borderRadius: 10,
                     fontSize: 16,
                 }}

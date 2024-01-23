@@ -37,6 +37,7 @@
 import React from "react";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons"; // Assuming you're using Expo
+import { COLORS } from "../../styles";
 
 interface VehicleSelectionButtonProps extends TouchableOpacityProps {
     transport: string;
@@ -51,7 +52,7 @@ const VehicleSelectionButton: React.FC<VehicleSelectionButtonProps> = ({
     selectedTransport,
     onSelectTransport,
     icon,
-    color = "green",
+    color = COLORS.GREEN,
     ...props
 }) => {
     return (
@@ -68,7 +69,7 @@ const VehicleSelectionButton: React.FC<VehicleSelectionButtonProps> = ({
             <FontAwesome5
                 name={icon}
                 size={24}
-                color={selectedTransport === transport ? "white" : color}
+                color={selectedTransport === transport ? COLORS.WHITE : color}
             />
         </TouchableOpacity>
     );

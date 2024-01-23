@@ -45,7 +45,7 @@ export default function ReportSummary({ route, navigation }: any) {
                 <View>
                     <Text
                         style={{
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: "600",
                             color: COLORS.BLACK,
                         }}

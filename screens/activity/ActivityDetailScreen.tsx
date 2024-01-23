@@ -37,6 +37,7 @@ export default function DetailScreen({ route, navigation }: any) {
                             height: 400,
                             marginBottom: 10,
                             borderRadius: 20,
+                            // borderWidth: 2,
                         }}
                     >
                         <MapView
@@ -97,7 +98,9 @@ export default function DetailScreen({ route, navigation }: any) {
                             }}
                         >
                             <View style={{ gap: 8 }}>
-                                <Text style={{ fontSize: 18 }}>
+                                <Text
+                                    style={{ fontSize: 16, fontWeight: "500" }}
+                                >
                                     Mode of Transport
                                 </Text>
 

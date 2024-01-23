@@ -31,6 +31,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AbsoluteBackButton from "../components/headers/AbsoluteBackButton";
+import { COLORS } from "../styles";
 
 const delta = 0.0922; // approximately 10km
 
@@ -310,6 +311,7 @@ export default function MapScreen({ navigation }) {
                     padding: 20,
                     paddingBottom: 30,
                     gap: 20,
+                    backgroundColor: COLORS.OFFWHITE,
                 }}
             >
                 {isTracking && (
@@ -384,14 +386,15 @@ export default function MapScreen({ navigation }) {
                             alignItems: "center",
                             borderRadius: 20,
                             borderWidth: 3,
+                            borderColor: COLORS.GREEN,
                         }}
                     >
                         {loading ? (
-                            <ActivityIndicator color="white" />
+                            <ActivityIndicator color={COLORS.OFFWHITE} />
                         ) : (
                             <Text
                                 style={{
-                                    color: "black",
+                                    color: COLORS.GREEN,
                                     fontSize: 16,
                                     fontWeight: "800",
                                 }}
@@ -405,17 +408,17 @@ export default function MapScreen({ navigation }) {
                         onPress={handleToggleTracking}
                         style={{
                             padding: 20,
-                            backgroundColor: "black",
+                            backgroundColor: COLORS.GREEN,
                             alignItems: "center",
                             borderRadius: 20,
                         }}
                     >
                         {loading ? (
-                            <ActivityIndicator color="white" />
+                            <ActivityIndicator color={COLORS.OFFWHITE} />
                         ) : (
                             <Text
                                 style={{
-                                    color: "white",
+                                    color: COLORS.OFFWHITE,
                                     fontSize: 16,
                                     fontWeight: "800",
                                 }}

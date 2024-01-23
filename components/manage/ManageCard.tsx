@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { COLORS } from "../../styles";
 
 const ManageCard = ({ navigation, user }) => {
     const avatar = "https://via.placeholder.com/150";
@@ -37,7 +38,7 @@ const ManageCard = ({ navigation, user }) => {
             <TouchableOpacity
                 onPress={() => navigation.navigate("ProfileDetail")}
                 style={{
-                    backgroundColor: "black",
+                    backgroundColor: COLORS.GREEN,
                     paddingVertical: 5,
                     paddingHorizontal: 15,
                     borderRadius: 10,

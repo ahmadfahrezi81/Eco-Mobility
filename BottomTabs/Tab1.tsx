@@ -10,7 +10,7 @@ import {
     query,
 } from "firebase/firestore";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "../styles";
+import { COLORS, styles } from "../styles";
 import { TrackingActivity } from "../types";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -126,7 +126,7 @@ export default function Tab1({ navigation }) {
                     <View
                         style={{
                             borderRadius: 20,
-                            backgroundColor: "white",
+                            backgroundColor: COLORS.WHITE,
                             padding: 16,
                             gap: 15,
                             flexDirection: "row",
@@ -166,7 +166,8 @@ export default function Tab1({ navigation }) {
                             <Text
                                 style={{
                                     fontSize: 16,
-                                    color: "grey",
+                                    color: COLORS.BLACK,
+                                    fontWeight: "300",
                                 }}
                             >
                                 Traveled
@@ -175,7 +176,7 @@ export default function Tab1({ navigation }) {
 
                         <View
                             style={{
-                                backgroundColor: "#F1F4F2",
+                                backgroundColor: `${COLORS.GREEN}1A`,
                                 height: 60,
                                 width: 60,
                                 borderRadius: 50,
@@ -186,7 +187,7 @@ export default function Tab1({ navigation }) {
                             <MaterialCommunityIcons
                                 name="map-marker-distance"
                                 size={24}
-                                color="black"
+                                color={COLORS.GREEN}
                             />
                         </View>
                     </View>
@@ -234,7 +235,8 @@ export default function Tab1({ navigation }) {
                             <Text
                                 style={{
                                     fontSize: 16,
-                                    color: "grey",
+                                    color: COLORS.BLACK,
+                                    fontWeight: "300",
                                 }}
                             >
                                 of CO2 Emitted
@@ -243,7 +245,7 @@ export default function Tab1({ navigation }) {
 
                         <View
                             style={{
-                                backgroundColor: "#F1F4F2",
+                                backgroundColor: `${COLORS.GREEN}1A`,
                                 height: 60,
                                 width: 60,
                                 borderRadius: 50,
@@ -254,7 +256,7 @@ export default function Tab1({ navigation }) {
                             <MaterialCommunityIcons
                                 name="molecule-co2"
                                 size={30}
-                                color="black"
+                                color={COLORS.GREEN}
                             />
                         </View>
                     </View>
@@ -266,7 +268,7 @@ export default function Tab1({ navigation }) {
                         <View
                             style={{
                                 padding: 20,
-                                backgroundColor: "black",
+                                backgroundColor: COLORS.GREEN,
                                 borderRadius: 20,
                                 // height: 1000,
                                 flexDirection: "row",
@@ -277,7 +279,7 @@ export default function Tab1({ navigation }) {
                         >
                             <Text
                                 style={{
-                                    color: "white",
+                                    color: COLORS.OFFWHITE,
                                     fontSize: 20,
                                     fontWeight: "500",
                                     fontStyle: "italic", // Set the fontStyle to italic
@@ -288,7 +290,7 @@ export default function Tab1({ navigation }) {
                             <AntDesign
                                 name="rightcircleo"
                                 size={26}
-                                color="white"
+                                color={COLORS.OFFWHITE}
                             />
                         </View>
                     </TouchableOpacity>
