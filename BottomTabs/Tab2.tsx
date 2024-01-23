@@ -11,7 +11,7 @@ import {
     query,
 } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { styles } from "../styles";
+import { COLORS, styles } from "../styles";
 import { getTimeDifference } from "../helpers/helpers";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
@@ -92,7 +92,7 @@ export default function Tab2({ navigation }) {
                 >
                     <View
                         style={{
-                            backgroundColor: "#F1F4F2",
+                            backgroundColor: `${COLORS.GREEN}1A`,
                             height: 50,
                             width: 50,
                             borderRadius: 8,
@@ -100,7 +100,11 @@ export default function Tab2({ navigation }) {
                             justifyContent: "center",
                         }}
                     >
-                        <FontAwesome5 name={item.vehicle} size={24} />
+                        <FontAwesome5
+                            name={item.vehicle}
+                            size={26}
+                            color={COLORS.GREEN}
+                        />
                     </View>
                     <View style={{ gap: 15 }}>
                         <View>
@@ -156,7 +160,7 @@ export default function Tab2({ navigation }) {
                         >
                             <View
                                 style={{
-                                    backgroundColor: "black",
+                                    backgroundColor: COLORS.GREEN,
                                     paddingVertical: 5,
                                     paddingHorizontal: 15,
                                     borderRadius: 10,
@@ -166,13 +170,18 @@ export default function Tab2({ navigation }) {
                                     gap: 10,
                                 }}
                             >
-                                <Text style={{ color: "white", fontSize: 14 }}>
+                                <Text
+                                    style={{
+                                        color: COLORS.WHITE,
+                                        fontSize: 14,
+                                    }}
+                                >
                                     Details
                                 </Text>
                                 <FontAwesome5
                                     name="arrow-circle-right"
                                     size={14}
-                                    color="white"
+                                    color={COLORS.WHITE}
                                 />
                             </View>
                         </TouchableOpacity>

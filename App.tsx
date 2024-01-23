@@ -10,6 +10,7 @@ import PrivacyScreen from "./screens/PrivacyScreen";
 import CertificateScreen from "./screens/CertificateScreen";
 import SignUpScreen from "./screens/auth/SignUpScreen";
 import SignInScreen from "./screens/auth/SignInScreen";
+import ReportSummary from "./screens/ReportSummary";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,17 @@ export default function App() {
                 <Stack.Screen
                     name="Map"
                     component={MapScreen}
+                    options={{
+                        headerShown: false,
+                        headerBackTitle: null,
+                    }}
+                />
+
+                {/* report */}
+
+                <Stack.Screen
+                    name="ReportSummary"
+                    component={ReportSummary}
                     options={{
                         headerShown: false,
                         headerBackTitle: null,

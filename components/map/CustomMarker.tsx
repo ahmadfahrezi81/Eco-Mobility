@@ -9,9 +9,13 @@ interface CustomMarkerProps {
         longitude: number;
     };
     transport: string;
+    anchor?: {
+        x: number;
+        y: number;
+    };
 }
 
-const getMarkerIcon = (transport: string) => {
+export const getMarkerIcon = (transport: string) => {
     switch (transport) {
         case "walking":
             return "walking";
@@ -29,9 +33,10 @@ const getMarkerIcon = (transport: string) => {
 const CustomMarker: React.FC<CustomMarkerProps> = ({
     coordinate,
     transport,
+    anchor = { x: 0.5, y: 1.3 },
 }) => {
     return (
-        <Marker coordinate={coordinate} anchor={{ x: 0.5, y: 1.3 }}>
+        <Marker coordinate={coordinate} anchor={anchor}>
             <View
                 style={{
                     height: 40,
