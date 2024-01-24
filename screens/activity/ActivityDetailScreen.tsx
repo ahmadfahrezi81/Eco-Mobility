@@ -98,9 +98,7 @@ export default function DetailScreen({ route, navigation }: any) {
                             }}
                         >
                             <View style={{ gap: 8 }}>
-                                <Text
-                                    style={{ fontSize: 16, fontWeight: "500" }}
-                                >
+                                <Text style={{ fontSize: 18 }}>
                                     Mode of Transport
                                 </Text>
 
@@ -153,7 +151,7 @@ export default function DetailScreen({ route, navigation }: any) {
                         >
                             <View style={{ gap: 8 }}>
                                 <Text style={{ fontSize: 18 }}>
-                                    Emission Tracked
+                                    Emission Produce
                                 </Text>
 
                                 <View
