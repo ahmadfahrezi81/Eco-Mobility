@@ -198,7 +198,7 @@ export default function ReportSummary({ route, navigation }: any) {
                         >
                             <View style={{ gap: 8 }}>
                                 <Text style={{ fontSize: 18 }}>
-                                    Emission Tracked
+                                    Emission Produce
                                 </Text>
 
                                 <View

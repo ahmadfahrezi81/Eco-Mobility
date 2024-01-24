@@ -1,7 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, TextInput, ActivityIndicator } from "react-native";
+import {
+    View,
+    Text,
+    Button,
+    TextInput,
+    ActivityIndicator,
+    Pressable,
+    Image,
+} from "react-native";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { styles } from "../../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -9,6 +17,8 @@ import SubNavHeader from "../../components/headers/SubNavHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputWithLabel from "../../components/ui/InputWithLabel";
 import LoadButton from "../../components/ui/LoadButton";
+
+import * as ImagePicker from "expo-image-picker";
 
 export default function ProfileDetail({ navigation }) {
     const [userData, setUserData] = useState(null);
@@ -56,12 +66,13 @@ export default function ProfileDetail({ navigation }) {
         setLoading(true);
 
         const userRef = await doc(FIRESTORE_DB, `users/${userData.uid}`);
+
+        await updateDoc(userRef, { name: name });
+
         const leaderboardRef = await doc(
             FIRESTORE_DB,
             `leaderboard/${userData.uid}`
         );
-
-        await updateDoc(userRef, { name: name });
 
         await updateDoc(leaderboardRef, { name: name });
 

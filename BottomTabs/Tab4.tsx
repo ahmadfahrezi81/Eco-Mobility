@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { View, Text, Button, Image, TouchableOpacity } from "react-native";
 import ManageButton from "../components/manage/ManageButton";
 import ManageCard from "../components/manage/ManageCard";
@@ -12,6 +18,9 @@ import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "../styles";
 
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import ProfileBottomSheetModal from "../components/ui/ProfileBottomSheet";
+
 const SkeletonCommonProps = {
     colorMode: "light",
     backgroundColor: "#FFFFFF",
@@ -20,6 +29,10 @@ const SkeletonCommonProps = {
 
 export default function Tab4({ navigation }) {
     const [userData, setUserData] = useState(null);
+
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+    const handlePresentModalPress = () => bottomSheetRef.current.present();
 
     useFocusEffect(
         useCallback(() => {
@@ -63,6 +76,7 @@ export default function Tab4({ navigation }) {
         >
             <Text style={styles.title}>Manage</Text>
 
+            {/* <Button title="press" onPress={handlePresentModalPress} /> */}
             {/* <Skeleton.Group show={loading}> */}
             <View style={{ gap: 30 }}>
                 <Skeleton.Group show={userData === null}>
@@ -126,6 +140,7 @@ export default function Tab4({ navigation }) {
                     </View>
                 </Skeleton.Group>
             </View>
+            <ProfileBottomSheetModal ref={bottomSheetRef} />
         </SafeAreaView>
     );
 }
