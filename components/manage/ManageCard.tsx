@@ -7,46 +7,14 @@ import {
     View,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS } from "../../styles";
 
-import * as ImagePicker from "expo-image-picker";
-import {
-    FontAwesome5,
-    Ionicons,
-    MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
-import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import ProfileBottomSheetModal from "../ui/ProfileBottomSheet";
 
 const ManageCard = ({ navigation, user }) => {
-    const avatar = "https://via.placeholder.com/150";
-    const randomName = "John Doe";
-    const joinedYear = "2020";
-    const [selectedImage, setSelectedImage] = useState(null);
-
-    // if (!user) {
-    //     return <Text>Loading...</Text>;
-    // }
-
-    const pickImageAsync = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            // console.log(result);
-            setSelectedImage(result.assets[0].uri);
-        } else {
-            alert("You did not select any image.");
-        }
-    };
-
     const getInitials = () => {
         const nameParts = user.name.split(" ");
         const firstInitial = nameParts.length > 0 ? nameParts[0].charAt(0) : "";
@@ -82,7 +50,6 @@ const ManageCard = ({ navigation, user }) => {
                             color: COLORS.BLACK,
                         }}
                     >
-                        {/* {user.name[0]} */}
                         {getInitials()}
                     </Text>
                 </View>

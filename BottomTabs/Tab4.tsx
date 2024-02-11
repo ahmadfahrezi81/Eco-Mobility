@@ -32,8 +32,6 @@ export default function Tab4({ navigation }) {
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-    const handlePresentModalPress = () => bottomSheetRef.current.present();
-
     useFocusEffect(
         useCallback(() => {
             async function fetchData() {
