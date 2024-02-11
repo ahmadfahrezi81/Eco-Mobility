@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 // import BottomSheet from "@gorhom/bottom-sheet";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import {
@@ -9,7 +9,6 @@ import {
     useRef,
     useState,
 } from "react";
-import ManageButton from "../../components/manage/ManageButton";
 
 import { COLORS, styles } from "../../styles";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
@@ -33,7 +32,6 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
     const snapPoints = useMemo(() => ["30%"], []);
     const [userData, setUserData] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    // const [imageUrl, setImageUrl] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,47 +47,58 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        uploadImage();
+    }, [selectedImage]);
+
     const pickImageAsync = async () => {
+        setSelectedImage(null);
+
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             quality: 1,
         });
 
         if (!result.canceled) {
-            // console.log(result);
             setSelectedImage(result.assets[0].uri);
-            uploadImage();
+
+            //this alert is for the user. Give a sense of instant illusion.
+            //image is not yet uploaded
+            alert("Image uploaded successfully!");
         } else {
-            alert("You did not select any image.");
+            // no need to say: below for dev only
+            // alert("You did not select any image.");
+            // ref.current?.close();
         }
     };
 
     const uploadImage = async () => {
         try {
-            if (!selectedImage) {
-                alert("Please select an image first.");
-                return;
+            if (selectedImage) {
+                const response = await fetch(selectedImage);
+                const blob = await response.blob();
+
+                let imageRef = firebaseRef(
+                    FIREBASE_STORAGE,
+                    `profile-pictures/${uuid()}`
+                );
+
+                await uploadBytes(imageRef, blob);
+
+                const downloadURL = await getDownloadURL(imageRef);
+
+                const userRef = await doc(
+                    FIRESTORE_DB,
+                    `users/${userData.uid}`
+                );
+
+                await updateDoc(userRef, { profileImgURL: downloadURL });
+
+                console.log("[UPLOAD SUCCESFUL]", downloadURL);
+
+                //@ts-ignore
+                ref.current?.close();
             }
-
-            const response = await fetch(selectedImage);
-            const blob = await response.blob();
-
-            let imageRef = firebaseRef(
-                FIREBASE_STORAGE,
-                `profile-pictures/${uuid()}`
-            );
-            await uploadBytes(imageRef, blob);
-
-            const downloadURL = await getDownloadURL(imageRef);
-            // setImageUrl(downloadURL);
-
-            const userRef = await doc(FIRESTORE_DB, `users/${userData.uid}`);
-
-            await updateDoc(userRef, { profileImgURL: downloadURL });
-
-            console.log(downloadURL);
-
-            alert("Image uploaded successfully!");
         } catch (error) {
             console.error("Error uploading image:", error.message);
             alert("Error uploading image. Please try again.");

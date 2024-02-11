@@ -18,8 +18,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import InputWithLabel from "../../components/ui/InputWithLabel";
 import LoadButton from "../../components/ui/LoadButton";
 
-import * as ImagePicker from "expo-image-picker";
-
 export default function ProfileDetail({ navigation }) {
     const [userData, setUserData] = useState(null);
     const [name, setName] = useState(null);
