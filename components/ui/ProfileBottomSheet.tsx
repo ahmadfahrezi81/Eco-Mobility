@@ -1,14 +1,7 @@
 import { Text, View } from "react-native";
 // import BottomSheet from "@gorhom/bottom-sheet";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import {
-    forwardRef,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useState } from "react";
 
 import { COLORS, styles } from "../../styles";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
@@ -93,6 +86,15 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
                 );
 
                 await updateDoc(userRef, { profileImgURL: downloadURL });
+
+                const leaderboardRef = await doc(
+                    FIRESTORE_DB,
+                    `leaderboard/${userData.uid}`
+                );
+
+                await updateDoc(leaderboardRef, {
+                    profileImgURL: downloadURL,
+                });
 
                 console.log("[UPLOAD SUCCESFUL]", downloadURL);
 
