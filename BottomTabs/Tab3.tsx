@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 import { Leaderboard, TrackingActivity } from "../types";
 import { FIRESTORE_DB } from "../firebaseConfig";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, doc, getDocs, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, styles } from "../styles";
 import { useFocusEffect } from "@react-navigation/native";
@@ -12,6 +12,9 @@ import {
     FontAwesome5,
     MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { getAllFromStorage } from "../helpers/printAllFromAsyncStorage";
+import ProfilePicture from "../components/ui/ProfilePicture";
+import { getInitials } from "../helpers/profileHelpers";
 
 interface LeaderboardItemProps {
     item: Leaderboard;
@@ -21,12 +24,24 @@ export default function Tab3({ navigation }) {
     const [leaderboard, setLeaderboard] = useState<Leaderboard[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [userId, setUserId] = useState<string>("");
+    const [userData, setUserData] = useState(null);
 
     const avatar = "https://via.placeholder.com/150";
 
     useFocusEffect(
         useCallback(() => {
             async function fetchData() {
+                AsyncStorage.multiGet(["credentials", "user"]).then(
+                    (response) => {
+                        const user = JSON.parse(response[1][1]);
+
+                        if (user) {
+                            setUserData(user);
+                            console.log(user);
+                        }
+                    }
+                );
+
                 const credentialsStorage = await AsyncStorage.getItem(
                     "credentials"
                 );
@@ -60,6 +75,8 @@ export default function Tab3({ navigation }) {
                     setUserId(userId);
                     setLoading(false);
                 }
+
+                // getAllFromStorage();
             }
 
             fetchData();
@@ -100,10 +117,28 @@ export default function Tab3({ navigation }) {
                 >
                     <Text style={{ fontSize: 18 }}>{item.ranking}</Text>
 
-                    <Image
-                        style={{ width: 50, height: 50, borderRadius: 25 }}
-                        source={{ uri: avatar }}
-                    />
+                    <ProfilePicture data={item} />
+                    {/* <View
+                        style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50,
+                            backgroundColor: COLORS.GREY,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: "600",
+                                color: COLORS.BLACK,
+                            }}
+                        >
+                            {getInitials(item.name)}
+                        </Text>
+                    </View> */}
+
                     <Text style={{ fontSize: 14, fontWeight: "600" }}>
                         {item.name}
                     </Text>
