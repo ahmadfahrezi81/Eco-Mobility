@@ -7,7 +7,7 @@ import ActivityDetailScreen from "./screens/activity/ActivityDetailScreen";
 import MapScreen from "./screens/MapScreen";
 import ProfileDetailScreen from "./screens/manage/ProfileDetailScreen";
 import PrivacyScreen from "./screens/PrivacyScreen";
-import CertificateScreen from "./screens/CertificateScreen";
+import CertificateScreen from "./screens/manage/CertificateScreen";
 import SignUpScreen from "./screens/auth/SignUpScreen";
 import SignInScreen from "./screens/auth/SignInScreen";
 import ReportSummary from "./screens/ReportSummary";
