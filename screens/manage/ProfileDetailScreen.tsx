@@ -1,18 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import {
-    View,
-    Text,
-    Button,
-    TextInput,
-    ActivityIndicator,
-    Pressable,
-    Image,
-} from "react-native";
+import { View } from "react-native";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { styles } from "../../styles";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import SubNavHeader from "../../components/headers/SubNavHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputWithLabel from "../../components/ui/InputWithLabel";
@@ -114,75 +105,3 @@ export default function ProfileDetail({ navigation }) {
         </SafeAreaView>
     );
 }
-
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { doc, getDoc, updateDoc } from "firebase/firestore";
-// import React, { useEffect, useState } from "react";
-// import { View, Text, Button, TextInput } from "react-native";
-// import { FIRESTORE_DB } from "../../firebaseConfig";
-// import { styles } from "../../styles";
-// import { TouchableOpacity } from "react-native-gesture-handler";
-
-// export default function ProfileDetail({ navigation }) {
-//     const [userData, setUserData] = useState(null);
-//     const [name, setName] = useState(null);
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             const userStorage = await AsyncStorage.getItem("user");
-
-//             if (userStorage) {
-//                 const user = JSON.parse(userStorage);
-
-//                 setUserData(user);
-//                 // console.log(user);
-//                 setName(user.name);
-//             }
-//         };
-
-//         fetchData();
-//     }, []);
-
-//     const updateProfile = async () => {
-//         const ref = await doc(FIRESTORE_DB, `users/${userData.uid}`);
-
-//         await updateDoc(ref, { name: name });
-
-//         navigation.goBack();
-//     };
-
-//     return (
-//         <View style={styles.container}>
-//             {userData && (
-//                 <View style={{ gap: 10 }}>
-//                     <TextInput
-//                         autoCapitalize="none"
-//                         value={name}
-//                         placeholder="Name"
-//                         onChangeText={(e) => setName(e)}
-//                         style={{
-//                             paddingVertical: 10,
-//                             paddingHorizontal: 15,
-//                             borderWidth: 2,
-//                             borderRadius: 10,
-//                         }}
-//                     />
-
-//                     <TouchableOpacity
-//                         onPress={updateProfile}
-//                         style={{
-//                             backgroundColor: "black",
-//                             padding: 15,
-//                             borderRadius: 30,
-//                             alignItems: "center",
-//                         }}
-//                     >
-//                         <Text style={{ color: "white" }}>
-//                             Update Profile {userData.name}
-//                         </Text>
-//                     </TouchableOpacity>
-//                 </View>
-//             )}
-//         </View>
-//     );
-// }
