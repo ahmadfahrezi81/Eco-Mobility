@@ -20,6 +20,7 @@ import {
     FontAwesome5,
     MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import { FirebaseError } from "firebase/app";
 
 export interface Todo {
     id: string;
@@ -38,6 +39,8 @@ export default function Tab1({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
+            let isMounted = true; // <--- The flag to track the component's mounted state
+
             async function fetchData() {
                 const credentialsStorage = await AsyncStorage.getItem(
                     "credentials"
@@ -57,60 +60,59 @@ export default function Tab1({ navigation }) {
                         collectionRef,
                         orderBy("startTime", "desc")
                     );
-                    const snapshot = await getDocs(querying);
 
-                    const trackingActivities: TrackingActivity[] = [];
+                    // Set up Firestore listener
+                    const unsubscribe = onSnapshot(
+                        querying,
+                        (querySnapshot) => {
+                            if (isMounted) {
+                                let distance = 0;
+                                let emission = 0;
 
-                    let distance = 0;
-                    let emission = 0;
+                                const trackingActivities =
+                                    querySnapshot.docs.map((doc, i) => {
+                                        const data =
+                                            doc.data() as TrackingActivity;
 
-                    snapshot.docs.map((doc) => {
-                        const trackingActivity = doc.data() as TrackingActivity;
+                                        distance += data.distance;
+                                        emission +=
+                                            data.distance *
+                                            getCO2EmissionRate(data.vehicle);
 
-                        trackingActivities.push({
-                            id: doc.id,
-                            vehicle: trackingActivity.vehicle,
-                            coordinates: trackingActivity.coordinates,
-                            startTime: trackingActivity.startTime,
-                            endTime: trackingActivity.endTime,
-                            distance: trackingActivity.distance,
-                            xp: trackingActivity.xp,
-                        });
+                                        return {
+                                            ...data,
+                                        };
+                                    });
 
-                        distance += trackingActivity.distance;
+                                setTotalDistance(distance);
+                                setTotalEmission(emission);
+                                setTrackingActivities(trackingActivities);
+                                setLoading(false);
+                            }
+                        },
+                        handleError
+                    );
 
-                        emission +=
-                            trackingActivity.distance *
-                            getCO2EmissionRate(trackingActivity.vehicle);
-
-                        // setTotalDistance(
-                        //     (prevTotalDistance) =>
-                        //         prevTotalDistance + trackingActivity.distance
-                        // );
-
-                        // setTotalEmission(
-                        //     (prevTotalEmission) =>
-                        //         prevTotalEmission +
-                        //         trackingActivity.distance *
-                        //             getCO2EmissionRate(trackingActivity.vehicle)
-                        // );
-                    });
-
-                    setTotalDistance(distance);
-                    setTotalEmission(emission);
-
-                    // console.log(trackingActivities);
-
-                    // console.log(totalDistance);
-
-                    setTrackingActivities(trackingActivities);
-                    setLoading(false);
+                    return unsubscribe;
                 }
             }
 
-            fetchData();
+            fetchData().then((unsubscribe) => {
+                // Clean up function is run when the component is unmounted.
+                // Here, we stop listening to the changes.
+                return () => {
+                    isMounted = false;
+                    if (unsubscribe) {
+                        unsubscribe();
+                    }
+                };
+            });
         }, [])
     );
+
+    function handleError(error: FirebaseError) {
+        console.error("Error received in snapshot listener", error);
+    }
 
     return (
         <SafeAreaView

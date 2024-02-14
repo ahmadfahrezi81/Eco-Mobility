@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { styles } from "../../styles";
-import SubNavHeader from "../../components/headers/SubNavHeader";
+import SubNavHeader from "../../components/top nav/SubNavHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InputWithLabel from "../../components/ui/InputWithLabel";
 import LoadButton from "../../components/ui/LoadButton";

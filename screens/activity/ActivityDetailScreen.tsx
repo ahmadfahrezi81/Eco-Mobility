@@ -10,7 +10,7 @@ import {
     getTimeDifference,
 } from "../../helpers/helpers";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SubNavHeader from "../../components/headers/SubNavHeader";
+import SubNavHeader from "../../components/top nav/SubNavHeader";
 import CustomMarker, { getMarkerIcon } from "../../components/map/CustomMarker";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";

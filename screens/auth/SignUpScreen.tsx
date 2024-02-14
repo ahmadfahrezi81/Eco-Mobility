@@ -1,7 +1,5 @@
 import {
-    Button,
     KeyboardAvoidingView,
-    StyleSheet,
     Text,
     TouchableOpacity,
     View,
@@ -14,7 +12,6 @@ import {
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { doc, setDoc } from "firebase/firestore";
-import { TextInput } from "react-native-gesture-handler";
 
 import { styles } from "../../styles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -67,7 +64,7 @@ const SignUpScreen = ({ navigation }) => {
 
                 await AsyncStorage.setItem(
                     "credentials",
-                    JSON.stringify({ email, userId: user.uid })
+                    JSON.stringify({ email, password, userId: user.uid })
                 );
 
                 navigation.reset({
@@ -154,7 +151,6 @@ const SignUpScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* <Button title="Sign Up" onPress={signUp} /> */}
             {/* </KeyboardAvoidingView> */}
         </SafeAreaView>
     );

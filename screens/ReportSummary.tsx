@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { COLORS, styles } from "../styles";
-import { Coordinate, TrackingActivity } from "../types";
+import { TrackingActivity } from "../types";
 import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
 import {
     capitalizeFirstLetter,
@@ -10,7 +10,6 @@ import {
     getTimeDifference,
 } from "../helpers/helpers";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SubNavHeader from "../components/headers/SubNavHeader";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import { getMarkerIcon } from "../components/map/CustomMarker";
@@ -25,11 +24,6 @@ export default function ReportSummary({ route, navigation }: any) {
             edges={["right", "left", "top", "bottom"]}
             style={[styles.container]}
         >
-            {/* <SubNavHeader
-                navigation={navigation}
-                subNavStyle={{ marginLeft: -10 }}
-            /> */}
-
             <View
                 style={[
                     {

@@ -1,25 +1,19 @@
 import {
-    Button,
     KeyboardAvoidingView,
-    StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, setDoc } from "firebase/firestore";
-import { TextInput } from "react-native-gesture-handler";
 
 import { styles } from "../../styles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoadButton from "../../components/ui/LoadButton";
 import InputWithLabel from "../../components/ui/InputWithLabel";
+import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
 
 const SignInScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
@@ -40,74 +34,57 @@ const SignInScreen = ({ navigation }) => {
                 email,
                 password
             );
-            // console.log(response);
 
             const user = response.user;
 
             if (user) {
                 await AsyncStorage.setItem(
                     "credentials",
-                    JSON.stringify({ email, userId: user.uid })
+                    JSON.stringify({ email, password, userId: user.uid })
                 );
+
                 navigation.reset({
                     index: 0,
                     routes: [{ name: "Home" }],
                 });
             }
-        } catch (e) {
-            console.log(e);
-            alert("Sign In Failed" + e.message);
+        } catch (error) {
+            console.log(error);
+            alert("Sign In Failed" + error.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const signUp = async () => {
-        setLoading(true);
-
-        try {
-            const response = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-
-            const user = response.user;
-
-            // Add document to Firestore
-            if (user) {
-                const userRef = doc(FIRESTORE_DB, "users", user.uid);
-                await setDoc(userRef, {
-                    uid: user.uid,
-                    email,
-                    name: "John Doe",
-                    joinedDate: new Date(),
-                });
-
-                console.log("User added with id: ", userRef.id);
-            }
-        } catch (e) {
-            console.log(e);
-            alert("Sign Up Failed" + e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Function to restore Session
     const restoreSession = async () => {
         try {
             const credentials = await AsyncStorage.getItem("credentials");
+
             if (credentials) {
                 const { email, password } = JSON.parse(credentials);
 
-                // Try to Sign In silently (this should probably put into try-catch block to handle the error)
-                await signInWithEmailAndPassword(auth, email, password);
-                // navigation.navigate("Home");
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: "Home" }],
-                });
+                getAllFromAsyncStorage();
+
+                try {
+                    const response = await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+                    const user = response.user;
+
+                    if (user) {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: "Home" }],
+                        });
+                    }
+                } catch (e) {
+                    console.log(e);
+
+                    console.log("hello");
+                    // Handle the error appropriately, e.g. clear the stored credentials
+                }
             }
         } catch (e) {
             console.log(e);
@@ -157,7 +134,6 @@ const SignInScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* <Button title="Sign Up" onPress={signUp} /> */}
             {/* </KeyboardAvoidingView> */}
         </SafeAreaView>
     );

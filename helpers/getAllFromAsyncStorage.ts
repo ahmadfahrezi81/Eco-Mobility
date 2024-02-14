@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const getAllFromStorage = async () => {
+export const getAllFromAsyncStorage = async () => {
     try {
         const keys = await AsyncStorage.getAllKeys();
         const result = await AsyncStorage.multiGet(keys);
