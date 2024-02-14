@@ -7,6 +7,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    onSnapshot,
     orderBy,
     query,
 } from "firebase/firestore";
@@ -16,6 +17,7 @@ import { getTimeDifference } from "../helpers/helpers";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FirebaseError } from "firebase/app";
 
 interface ActivityListProps {
     item: TrackingActivity;
@@ -29,6 +31,8 @@ export default function Tab2({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
+            let isMounted = true;
+
             async function fetchData() {
                 const credentialsStorage = await AsyncStorage.getItem(
                     "credentials"
@@ -48,32 +52,51 @@ export default function Tab2({ navigation }) {
                         collectionRef,
                         orderBy("startTime", "desc")
                     );
-                    const snapshot = await getDocs(querying);
 
-                    const trackingActivities: TrackingActivity[] = [];
+                    // Start listening to the query
+                    const unsubscribe = onSnapshot(
+                        querying,
+                        (snapshot) => {
+                            const trackingActivities: TrackingActivity[] = [];
 
-                    snapshot.docs.map((doc) => {
-                        const trackingActivity = doc.data() as TrackingActivity;
+                            snapshot.docs.map((doc) => {
+                                const trackingActivity =
+                                    doc.data() as TrackingActivity;
 
-                        trackingActivities.push({
-                            id: doc.id,
-                            vehicle: trackingActivity.vehicle,
-                            coordinates: trackingActivity.coordinates,
-                            startTime: trackingActivity.startTime,
-                            endTime: trackingActivity.endTime,
-                            distance: trackingActivity.distance,
-                            xp: trackingActivity.xp,
-                        });
-                    });
+                                trackingActivities.push({
+                                    id: doc.id,
+                                    vehicle: trackingActivity.vehicle,
+                                    coordinates: trackingActivity.coordinates,
+                                    startTime: trackingActivity.startTime,
+                                    endTime: trackingActivity.endTime,
+                                    distance: trackingActivity.distance,
+                                    xp: trackingActivity.xp,
+                                });
+                            });
 
-                    setTrackingActivities(trackingActivities);
-                    setLoading(false);
+                            if (isMounted) {
+                                setTrackingActivities(trackingActivities);
+                                setLoading(false);
+                            }
+                        },
+                        handleError
+                    ); // maybe you would like to handle the error here
+
+                    // This is your cleanup function
+                    return () => {
+                        isMounted = false;
+                        unsubscribe(); // Stop listening for changes
+                    };
                 }
             }
 
             fetchData();
         }, [])
     );
+
+    function handleError(error: FirebaseError) {
+        console.error("Error received in snapshot listener", error);
+    }
 
     const ActivityList = ({ item }: ActivityListProps) => {
         return (

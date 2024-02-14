@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import {
     ActivityIndicator,
-    BackHandler,
-    Platform,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -13,9 +11,8 @@ import VehicleSelectionButton from "../components/map/VehicleSelectionButton";
 import CustomMarker from "../components/map/CustomMarker";
 import { calculateTotalDistance } from "../helpers/distanceCalculator";
 import { useUserLocationChange } from "../hooks/userLocationChange";
-import { FIREBASE_APP, FIRESTORE_DB } from "../firebaseConfig";
+import { FIRESTORE_DB } from "../firebaseConfig";
 import {
-    FieldValue,
     Timestamp,
     addDoc,
     collection,
@@ -27,10 +24,7 @@ import {
 } from "firebase/firestore";
 import { Coordinate, MovementTrailWithoutID } from "../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import { SafeAreaView } from "react-native-safe-area-context";
-import AbsoluteBackButton from "../components/headers/AbsoluteBackButton";
+import AbsoluteBackButton from "../components/top nav/AbsoluteBackButton";
 import { COLORS } from "../styles";
 
 const delta = 0.0922; // approximately 10km
@@ -119,24 +113,21 @@ export default function MapScreen({ navigation }) {
 
                 const { userId } = JSON.parse(credentialsStorage);
 
-                const userRef = doc(FIRESTORE_DB, "trackingActivities", userId);
+                // const userRef = doc(FIRESTORE_DB, "trackingActivities", userId);
+                const userRef = doc(
+                    FIRESTORE_DB,
+                    `trackingActivities/${userId}`
+                );
+
                 const trackingActivitiesRef = collection(
                     userRef,
                     "userTrackingActivities"
                 );
 
+                // Check if user reference exists, and add the document if it doesn't
                 if (!(await getDoc(userRef)).exists()) {
                     await setDoc(userRef, {});
                 }
-
-                // await addDoc(trackingActivitiesRef, {
-                //     distance,
-                //     startTime,
-                //     endTime,
-                //     vehicle,
-                //     coordinates,
-                //     xp: 10,
-                // });
 
                 const newDocRef = await addDoc(trackingActivitiesRef, {
                     distance,
@@ -150,7 +141,12 @@ export default function MapScreen({ navigation }) {
                 const docSnap = await getDoc(newDocRef);
                 const data = docSnap.data();
 
-                const leaderboardRef = doc(FIRESTORE_DB, "leaderboard", userId);
+                // Update user's XP in the leaderboard
+
+                const leaderboardRef = doc(
+                    FIRESTORE_DB,
+                    `leaderboard/${userId}`
+                );
                 await updateDoc(leaderboardRef, {
                     xp: increment(10),
                 });
@@ -159,12 +155,7 @@ export default function MapScreen({ navigation }) {
                 console.log("[DATA SENT]", trackingActivitiesRef);
 
                 setLoading(false);
-
-                setTimeout(() => {
-                    // navigation.goBack();
-
-                    navigation.navigate("ReportSummary", { data: data });
-                }, 100);
+                navigation.navigate("ReportSummary", { data: data });
             }
         } catch (error) {
             console.error("Error adding document: ", error);

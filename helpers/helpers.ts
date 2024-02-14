@@ -4,6 +4,15 @@ export const capitalizeFirstLetter = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const getInitials = (name) => {
+    const nameParts = name.split(" ");
+    const firstInitial =
+        nameParts.length > 0 ? nameParts[0].charAt(0).toUpperCase() : "";
+    const secondInitial =
+        nameParts.length > 1 ? nameParts[1].charAt(0).toUpperCase() : "";
+    return firstInitial + secondInitial;
+};
+
 export const getTimeDifference = (start: Date, end: Date) => {
     const diffInMs = Math.abs(end.getTime() - start.getTime());
     const diffInHours = Math.floor(diffInMs / 1000 / 60 / 60);
@@ -15,32 +24,6 @@ export const getTimeDifference = (start: Date, end: Date) => {
 
     return `${diffInHours}:${format(diffInMinutes)}:${format(diffInSeconds)}`;
 };
-
-// export const getMapRegion = (coordinates: Coordinate[]) => {
-//     if (coordinates.length === 0) {
-//         return {
-//             latitude: 0,
-//             longitude: 0,
-//             latitudeDelta: 0.0922,
-//             longitudeDelta: 0.0421,
-//         };
-//     }
-
-//     const minLat = Math.min(...coordinates.map((coord) => coord.latitude));
-//     const maxLat = Math.max(...coordinates.map((coord) => coord.latitude));
-//     const minLng = Math.min(...coordinates.map((coord) => coord.longitude));
-//     const maxLng = Math.max(...coordinates.map((coord) => coord.longitude));
-
-//     const latitudeDelta = maxLat - minLat;
-//     const longitudeDelta = maxLng - minLng + 0.002;
-
-//     return {
-//         latitude: (maxLat + minLat) / 2,
-//         longitude: (maxLng + minLng) / 2,
-//         latitudeDelta,
-//         longitudeDelta,
-//     };
-// };
 
 export const getMapRegion = (coordinates: Coordinate[]) => {
     if (coordinates.length === 0) {

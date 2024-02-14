@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, Text } from "react-native";
 import { COLORS } from "../../styles";
-import { getInitials } from "../../helpers/profileHelpers";
+import { getInitials } from "../../helpers/helpers";
 
 export default function ProfilePicture({ data }) {
     if (data && data.profileImgURL) {

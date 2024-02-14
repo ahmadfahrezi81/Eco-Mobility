@@ -10,7 +10,7 @@ import ManageButton from "../components/manage/ManageButton";
 import ManageCard from "../components/manage/ManageCard";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 //testing
 import { Skeleton } from "moti/skeleton";
@@ -20,6 +20,7 @@ import { styles } from "../styles";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import ProfileBottomSheetModal from "../components/ui/ProfileBottomSheet";
+import { FirebaseError } from "firebase/app";
 
 const SkeletonCommonProps = {
     colorMode: "light",
@@ -34,6 +35,8 @@ export default function Tab4({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
+            let isMounted = true;
+
             async function fetchData() {
                 const credentialsStorage = await AsyncStorage.getItem(
                     "credentials"
@@ -43,29 +46,37 @@ export default function Tab4({ navigation }) {
                     const { userId } = JSON.parse(credentialsStorage);
 
                     const docRef = doc(FIRESTORE_DB, "users", userId);
-                    const docSnap = await getDoc(docRef);
 
-                    if (docSnap.exists()) {
-                        setUserData(docSnap.data());
+                    const unsubscribe = onSnapshot(
+                        docRef,
+                        (doc) => {
+                            if (doc.exists()) {
+                                const data = doc.data();
+                                setUserData(data);
+                                AsyncStorage.setItem(
+                                    "user",
+                                    JSON.stringify(data)
+                                );
+                            } else {
+                                console.log("No such document!");
+                            }
+                        },
+                        handleError
+                    );
 
-                        await AsyncStorage.setItem(
-                            "user",
-                            JSON.stringify(docSnap.data())
-                        );
-                    } else {
-                        console.log("No such document!");
-                    }
+                    return () => {
+                        isMounted = false;
+                        unsubscribe(); // Stop listening for changes
+                    };
                 }
-
-                console.log("hello from manage page");
             }
             fetchData();
-
-            // This function will be run when the component is unmounted.
-            // You can implement cleaning up if needed
-            return () => {};
         }, [])
     );
+
+    function handleError(error: FirebaseError) {
+        console.error("Error received in snapshot listener", error);
+    }
 
     return (
         <SafeAreaView

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, Dimensions, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SubNavHeader from "../../components/headers/SubNavHeader";
+import SubNavHeader from "../../components/top nav/SubNavHeader";
 import { COLORS, styles } from "../../styles";
 
 // import LogoLeaf from "../../assets/LogoLeaf.png";
-const Logo = require("../../assets/LogoLeaf.png");
+const Logo = require("../../assets/logo-leaf.png");
 const Sphere = require("../../assets/sphere.png");
 
 import {
@@ -22,7 +22,7 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllFromStorage } from "../../helpers/printAllFromAsyncStorage";
+import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HEIGHT = 480;
@@ -49,7 +49,7 @@ export default function Certificate({ navigation }) {
                 setEmail(user.email);
                 setJoinedDate(user.joinedDate.seconds);
 
-                getAllFromStorage();
+                getAllFromAsyncStorage();
             }
         };
 
