@@ -147,16 +147,16 @@ export default function Certificate({ navigation }) {
                         <Image
                             source={Sphere}
                             style={{
-                                width: 200,
-                                height: 200,
-                                marginTop: 10,
+                                width: 220,
+                                height: 220,
+                                marginTop: 20,
                             }}
                         />
                         <View
                             style={{
                                 position: "absolute",
                                 left: 20,
-                                bottom: 130,
+                                bottom: 100,
                             }}
                         >
                             <Text

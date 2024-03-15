@@ -15,11 +15,7 @@ import { TrackingActivity } from "../types";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getCO2EmissionRate } from "../helpers/helpers";
-import {
-    AntDesign,
-    FontAwesome5,
-    MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { FirebaseError } from "firebase/app";
 
 export interface Todo {
@@ -125,143 +121,155 @@ export default function Tab1({ navigation }) {
                 <Text>Loading...</Text>
             ) : (
                 <>
-                    <View
-                        style={{
-                            borderRadius: 20,
-                            backgroundColor: COLORS.WHITE,
-                            padding: 16,
-                            gap: 15,
-                            flexDirection: "row",
-                            marginBottom: 10,
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("DistanceChart")}
                     >
-                        <View style={{ gap: 8 }}>
-                            <Text style={{ fontSize: 18 }}>Total Distance</Text>
+                        <View
+                            style={{
+                                borderRadius: 20,
+                                backgroundColor: COLORS.WHITE,
+                                padding: 16,
+                                gap: 15,
+                                flexDirection: "row",
+                                marginBottom: 10,
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                        >
+                            <View style={{ gap: 8 }}>
+                                <Text style={{ fontSize: 18 }}>
+                                    Total Distance
+                                </Text>
+
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "baseline",
+                                        gap: 5,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 30,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        {totalDistance.toFixed(2)}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: "500",
+                                            paddingBottom: 1,
+                                        }}
+                                    >
+                                        KM
+                                    </Text>
+                                </View>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: COLORS.BLACK,
+                                        fontWeight: "300",
+                                    }}
+                                >
+                                    Traveled
+                                </Text>
+                            </View>
 
                             <View
                                 style={{
-                                    flexDirection: "row",
-                                    alignItems: "baseline",
-                                    gap: 5,
+                                    backgroundColor: `${COLORS.GREEN}1A`,
+                                    height: 60,
+                                    width: 60,
+                                    borderRadius: 50,
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        fontSize: 30,
-                                        fontWeight: "500",
-                                    }}
-                                >
-                                    {totalDistance.toFixed(2)}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 18,
-                                        fontWeight: "500",
-                                        paddingBottom: 1,
-                                    }}
-                                >
-                                    KM
-                                </Text>
+                                <MaterialCommunityIcons
+                                    name="map-marker-distance"
+                                    size={24}
+                                    color={COLORS.GREEN}
+                                />
                             </View>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    color: COLORS.BLACK,
-                                    fontWeight: "300",
-                                }}
-                            >
-                                Traveled
-                            </Text>
                         </View>
+                    </TouchableOpacity>
 
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("EmissionChart")}
+                    >
                         <View
                             style={{
-                                backgroundColor: `${COLORS.GREEN}1A`,
-                                height: 60,
-                                width: 60,
-                                borderRadius: 50,
+                                borderRadius: 20,
+                                backgroundColor: "white",
+                                padding: 16,
+                                gap: 15,
+                                flexDirection: "row",
+                                marginBottom: 10,
+                                justifyContent: "space-between",
                                 alignItems: "center",
-                                justifyContent: "center",
                             }}
                         >
-                            <MaterialCommunityIcons
-                                name="map-marker-distance"
-                                size={24}
-                                color={COLORS.GREEN}
-                            />
-                        </View>
-                    </View>
+                            <View style={{ gap: 8 }}>
+                                <Text style={{ fontSize: 18 }}>
+                                    Total Emission
+                                </Text>
 
-                    <View
-                        style={{
-                            borderRadius: 20,
-                            backgroundColor: "white",
-                            padding: 16,
-                            gap: 15,
-                            flexDirection: "row",
-                            marginBottom: 10,
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <View style={{ gap: 8 }}>
-                            <Text style={{ fontSize: 18 }}>Total Emission</Text>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "baseline",
+                                        gap: 5,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 30,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        {totalEmission.toFixed(2)}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: "500",
+                                            paddingBottom: 1,
+                                        }}
+                                    >
+                                        KG
+                                    </Text>
+                                </View>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        color: COLORS.BLACK,
+                                        fontWeight: "300",
+                                    }}
+                                >
+                                    of CO2 Emitted
+                                </Text>
+                            </View>
 
                             <View
                                 style={{
-                                    flexDirection: "row",
-                                    alignItems: "baseline",
-                                    gap: 5,
+                                    backgroundColor: `${COLORS.GREEN}1A`,
+                                    height: 60,
+                                    width: 60,
+                                    borderRadius: 50,
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        fontSize: 30,
-                                        fontWeight: "500",
-                                    }}
-                                >
-                                    {totalEmission.toFixed(2)}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 18,
-                                        fontWeight: "500",
-                                        paddingBottom: 1,
-                                    }}
-                                >
-                                    KG
-                                </Text>
+                                <MaterialCommunityIcons
+                                    name="molecule-co2"
+                                    size={30}
+                                    color={COLORS.GREEN}
+                                />
                             </View>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    color: COLORS.BLACK,
-                                    fontWeight: "300",
-                                }}
-                            >
-                                of CO2 Emitted
-                            </Text>
                         </View>
-
-                        <View
-                            style={{
-                                backgroundColor: `${COLORS.GREEN}1A`,
-                                height: 60,
-                                width: 60,
-                                borderRadius: 50,
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <MaterialCommunityIcons
-                                name="molecule-co2"
-                                size={30}
-                                color={COLORS.GREEN}
-                            />
-                        </View>
-                    </View>
+                    </TouchableOpacity>
 
                     {/* Track Button */}
                     <TouchableOpacity
@@ -284,7 +292,7 @@ export default function Tab1({ navigation }) {
                                     color: COLORS.OFFWHITE,
                                     fontSize: 20,
                                     fontWeight: "500",
-                                    fontStyle: "italic", // Set the fontStyle to italic
+                                    // fontStyle: "italic", // Set the fontStyle to italic
                                 }}
                             >
                                 TRACK NOW
