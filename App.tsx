@@ -10,6 +10,8 @@ import CertificateScreen from "./screens/manage/CertificateScreen";
 import SignUpScreen from "./screens/auth/SignUpScreen";
 import SignInScreen from "./screens/auth/SignInScreen";
 import ReportSummary from "./screens/ReportSummary";
+import DistanceChart from "./screens/home/DistanceChartScreen";
+import EmissionChart from "./screens/home/EmissionChartScreen";
 
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -40,9 +42,29 @@ export default function App() {
                             }}
                         />
 
+                        {/* Home */}
+
                         <Stack.Screen
                             name="Home"
                             component={HomeScreen}
+                            options={{
+                                headerShown: false,
+                                headerBackTitle: null,
+                            }}
+                        />
+
+                        <Stack.Screen
+                            name="DistanceChart"
+                            component={DistanceChart}
+                            options={{
+                                headerShown: false,
+                                headerBackTitle: null,
+                            }}
+                        />
+
+                        <Stack.Screen
+                            name="EmissionChart"
+                            component={EmissionChart}
                             options={{
                                 headerShown: false,
                                 headerBackTitle: null,
