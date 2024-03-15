@@ -44,6 +44,19 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
         uploadImage();
     }, [selectedImage]);
 
+    const takePhotoAsync = async () => {
+        setSelectedImage(null);
+        let result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setSelectedImage(result.assets[0].uri);
+            alert("Image uploaded successfully!");
+        }
+    };
+
     const pickImageAsync = async () => {
         setSelectedImage(null);
 
@@ -136,7 +149,7 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
 
                 <View style={{ gap: 5 }}>
                     {/* Take a photo */}
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={takePhotoAsync}>
                         <View
                             style={{
                                 paddingVertical: 10,

@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import ProfileBottomSheetModal from "../ui/ProfileBottomSheet";
+import moment from "moment";
 
 const ManageCard = ({ navigation, user }) => {
     const getInitials = () => {
@@ -97,8 +98,9 @@ const ManageCard = ({ navigation, user }) => {
                 <Text style={{ fontSize: 22, fontWeight: "600" }}>
                     {user.name}
                 </Text>
-                <Text style={{ fontSize: 14, fontWeight: "300" }}>
-                    Joined {user.joinedDate.toDate().toString()}
+                <Text style={{ fontSize: 12, fontWeight: "300" }}>
+                    Joined since{" "}
+                    {moment(user.joinedDate.toDate()).format("MMM DD, YYYY")}
                 </Text>
             </View>
 
