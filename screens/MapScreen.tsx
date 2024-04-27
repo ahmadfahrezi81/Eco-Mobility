@@ -220,27 +220,27 @@ export default function MapScreen({ navigation }) {
         setSelectedTransport(transport);
     };
 
-    const handleMapPress = (event: any) => {
-        const { latitude, longitude } = event.nativeEvent.coordinate;
-        setCurrentLocation({ latitude, longitude });
+    // const handleMapPress = (event: any) => {
+    //     const { latitude, longitude } = event.nativeEvent.coordinate;
+    //     setCurrentLocation({ latitude, longitude });
 
-        setCurrentMovementTrails((prevTrail) => [
-            ...prevTrail,
-            { latitude, longitude },
-        ]);
+    //     setCurrentMovementTrails((prevTrail) => [
+    //         ...prevTrail,
+    //         { latitude, longitude },
+    //     ]);
 
-        if (mapRef.current) {
-            mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            });
-        }
+    //     if (mapRef.current) {
+    //         mapRef.current.animateToRegion({
+    //             latitude,
+    //             longitude,
+    //             latitudeDelta: 0.0922,
+    //             longitudeDelta: 0.0421,
+    //         });
+    //     }
 
-        const distance = calculateTotalDistance(currentMovementTrails);
-        setTotalDistance(distance);
-    };
+    //     const distance = calculateTotalDistance(currentMovementTrails);
+    //     setTotalDistance(distance);
+    // };
 
     return (
         <View style={styles.container}>
@@ -261,7 +261,7 @@ export default function MapScreen({ navigation }) {
                 zoomEnabled={true}
                 showsCompass={true}
                 showsUserLocation={true}
-                onPress={handleMapPress}
+                // onPress={handleMapPress}
                 initialRegion={
                     currentLocation
                         ? {

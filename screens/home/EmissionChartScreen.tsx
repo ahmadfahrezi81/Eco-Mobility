@@ -1,25 +1,39 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import SubNavHeader from "../../components/top nav/SubNavHeader";
 import { COLORS, styles } from "../../styles";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, ScrollView, Text, View } from "react-native";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { FIRESTORE_DB } from "../../firebaseConfig";
 import { TrackingActivity } from "../../types";
 import { getCO2EmissionRate } from "../../helpers/helpers";
 import { FirebaseError } from "firebase/app";
+import { FIRESTORE_DB } from "../../firebaseConfig";
 
 const screenWidth = Dimensions.get("window").width;
 
+const getLast7Days = () => {
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const formattedDate = date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+        });
+        dates.push(formattedDate);
+    }
+    return dates;
+};
+
 export default function EmissionChart({ navigation }) {
     const [chartData, setChartData] = useState({
-        labels: ["S", "M", "T", "W", "T", "F", "S"],
+        labels: getLast7Days(),
         datasets: [
             {
-                data: [0, 0, 0, 0, 0, 0, 0], // Initialize with zeros for each day
+                data: [0, 0, 0, 0, 0, 0, 0],
             },
         ],
     });
@@ -27,6 +41,9 @@ export default function EmissionChart({ navigation }) {
     const [trackingActivities, setTrackingActivities] = useState<
         TrackingActivity[]
     >([]);
+
+    const [average, setAverage] = useState<number>(0);
+    const [highestThisWeek, setHighestThisWeek] = useState<number>(0);
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -67,11 +84,6 @@ export default function EmissionChart({ navigation }) {
                                         const data =
                                             doc.data() as TrackingActivity;
 
-                                        distance += data.distance;
-                                        emission +=
-                                            data.distance *
-                                            getCO2EmissionRate(data.vehicle);
-
                                         return {
                                             ...data,
                                         };
@@ -107,54 +119,161 @@ export default function EmissionChart({ navigation }) {
 
     useEffect(() => {
         if (trackingActivities.length > 0) {
-            // Initialize an array to hold the total distance for each day of the week
-            const weeklyEmissions = new Array(7).fill(0);
+            const updatedChartData = { ...chartData };
 
-            // Process the trackingActivities to calculate the total distance for each day
+            // Iterate through trackingActivities and update the data in chartData
             trackingActivities.forEach((activity) => {
-                const dayOfWeek = activity.startTime.toDate().getDay(); // Get the day of the week (0-6)
-                weeklyEmissions[dayOfWeek] +=
-                    activity.distance * getCO2EmissionRate(activity.vehicle); // Add the distance to the corresponding day
+                const activityDate = new Date(activity.endTime.seconds * 1000);
+
+                const formattedDate = activityDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                });
+
+                const index = updatedChartData.labels.findIndex(
+                    (label) => label === formattedDate
+                );
+                if (index !== -1) {
+                    updatedChartData.datasets[0].data[index] +=
+                        activity.distance *
+                        getCO2EmissionRate(activity.vehicle);
+                }
             });
 
-            // Update the chart data with the new weekly distances
-            setChartData((prevData) => ({
-                ...prevData,
-                datasets: [
-                    {
-                        data: weeklyEmissions,
-                    },
-                ],
+            setChartData(updatedChartData);
+
+            const updatedData = chartData.datasets[0].data.map((num) => {
+                if (num % 1 !== 0) {
+                    return Number(num.toFixed(2));
+                } else {
+                    return num;
+                }
+            });
+
+            setChartData((prevState) => ({
+                ...prevState,
+                datasets: [{ data: updatedData }],
             }));
         }
     }, [trackingActivities]);
 
+    useEffect(() => {
+        const data = chartData.datasets[0].data;
+        const highestValue = Math.max(...data);
+        setHighestThisWeek(highestValue);
+
+        const sum = data.reduce((acc, curr) => acc + curr, 0);
+        const avg = sum / data.length;
+        setAverage(avg);
+    }, [chartData]);
+
     return (
         <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
-            <SubNavHeader
-                navigation={navigation}
-                subNavStyle={{ marginLeft: -10 }}
-            />
-            {/* Remove the trackingActivities.map as we now display the data in the chart */}
-            <BarChart
-                data={chartData} // Use the state chartData instead of the hardcoded data
-                width={screenWidth - 10}
-                height={220} // Adjust the height as needed
-                yAxisLabel={""}
-                yAxisSuffix={"kg"} // Add a suffix if needed (e.g., "km" for kilometers)
-                chartConfig={{
-                    backgroundGradientFromOpacity: 0,
-                    backgroundGradientToOpacity: 0,
-                    decimalPlaces: 0,
-                    color: (opacity = 1) => `${COLORS.GREEN}`,
-                    labelColor: (opacity = 1) => `#000`,
-                }}
-                style={{
-                    marginVertical: 8,
-                    marginLeft: -30,
-                }}
-            />
-            {/* ... (rest of the component remains unchanged) */}
+            <SubNavHeader navigation={navigation} title={"Emission"} />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "baseline",
+                        gap: 4,
+                        marginTop: 14,
+                    }}
+                >
+                    <Text style={{ fontSize: 36, fontWeight: "600" }}>
+                        {average.toFixed(2)}
+                    </Text>
+                    <Text style={{ fontSize: 16 }}>
+                        kg of CO2 per day (avg)
+                    </Text>
+                </View>
+                <Text style={{ fontSize: 16, marginBottom: 8 }}>
+                    Your biggest emission
+                    {highestThisWeek.toFixed(2)}
+                    kg of CO2 (this week)
+                </Text>
+
+                <BarChart
+                    data={chartData}
+                    width={screenWidth - 40}
+                    height={220} // Adjust the height as needed
+                    yAxisSuffix={"kg"}
+                    yAxisLabel=""
+                    showValuesOnTopOfBars={true}
+                    flatColor={true}
+                    chartConfig={{
+                        backgroundGradientFromOpacity: 0,
+                        backgroundGradientToOpacity: 0,
+                        decimalPlaces: 1,
+                        barPercentage: 0.7,
+                        height: 5000,
+                        color: (opacity = 1) => `${COLORS.GREEN}`,
+                        fillShadowGradientOpacity: 1,
+                        labelColor: (opacity = 1) => `#000`,
+                        propsForBackgroundLines: {
+                            strokeWidth: 1,
+                            stroke: "#e3e3e3",
+                            strokeDasharray: "0",
+                        },
+                        backgroundGradientFrom: "#fff",
+                        backgroundGradientTo: "#fff",
+                    }}
+                    style={{
+                        marginVertical: 24,
+                        marginLeft: -20,
+                        paddingHorizontal: 10,
+                    }}
+                />
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: "700",
+                        marginBottom: 12,
+                    }}
+                >
+                    This week
+                </Text>
+                {chartData.labels
+                    .slice()
+                    .reverse()
+                    .map((label, index) => (
+                        <View
+                            key={index}
+                            style={{
+                                borderRadius: 10,
+                                backgroundColor: COLORS.WHITE,
+                                padding: 18,
+                                flexDirection: "row",
+                                marginBottom: 5,
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Text style={{ fontSize: 18 }}>
+                                {index === 0
+                                    ? "Today"
+                                    : index === 1
+                                    ? "Yesterday"
+                                    : label}
+                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "baseline",
+                                    gap: 4,
+                                }}
+                            >
+                                <Text
+                                    style={{ fontSize: 22, fontWeight: "500" }}
+                                >
+                                    {chartData.datasets[0].data[
+                                        chartData.labels.length - index - 1
+                                    ].toFixed(2)}
+                                </Text>
+                                <Text style={{ fontSize: 14 }}>kg of CO2</Text>
+                            </View>
+                        </View>
+                    ))}
+            </ScrollView>
         </SafeAreaView>
     );
 }

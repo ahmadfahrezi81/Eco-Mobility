@@ -5,7 +5,14 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { View, Text, Button, Image, TouchableOpacity } from "react-native";
+import {
+    View,
+    Text,
+    Button,
+    Image,
+    TouchableOpacity,
+    Alert,
+} from "react-native";
 import ManageButton from "../components/manage/ManageButton";
 import ManageCard from "../components/manage/ManageCard";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../firebaseConfig";
@@ -116,31 +123,64 @@ export default function Tab4({ navigation }) {
                         <Skeleton width={"100%"} {...SkeletonCommonProps}>
                             <ManageButton
                                 onPress={() => navigation.navigate("Privacy")}
-                                name={"Settings"}
-                                iconName={"settings"}
-                            />
-                        </Skeleton>
-
-                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
-                            <ManageButton
-                                onPress={() => navigation.navigate("Privacy")}
                                 name={"Privacy and Security"}
                                 iconName={"shield"}
                             />
                         </Skeleton>
+                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
+                            <ManageButton
+                                onPress={() =>
+                                    navigation.navigate("TermsAndCondition")
+                                }
+                                name={"Terms & Condition"}
+                                iconName={"file-text"}
+                            />
+                        </Skeleton>
 
                         <Skeleton width={"100%"} {...SkeletonCommonProps}>
                             <ManageButton
-                                onPress={async () => {
-                                    await FIREBASE_AUTH.signOut();
-                                    // Remove user credentials from AsyncStorage
-                                    await AsyncStorage.removeItem(
-                                        "credentials"
+                                // onPress={async () => {
+                                //     await FIREBASE_AUTH.signOut();
+                                //     // Remove user credentials from AsyncStorage
+                                //     await AsyncStorage.removeItem(
+                                //         "credentials"
+                                //     );
+                                //     navigation.reset({
+                                //         index: 0,
+                                //         routes: [{ name: "SignIn" }],
+                                //     });
+                                // }}
+                                onPress={() => {
+                                    Alert.alert(
+                                        "Confirm logout",
+                                        "Are you sure you want to logout?",
+                                        [
+                                            {
+                                                text: "No",
+                                                onPress: () =>
+                                                    console.log(
+                                                        "Cancel Pressed"
+                                                    ),
+                                                style: "cancel",
+                                            },
+                                            {
+                                                text: "Yes",
+                                                onPress: async () => {
+                                                    await FIREBASE_AUTH.signOut();
+                                                    await AsyncStorage.removeItem(
+                                                        "credentials"
+                                                    );
+                                                    navigation.reset({
+                                                        index: 0,
+                                                        routes: [
+                                                            { name: "SignIn" },
+                                                        ],
+                                                    });
+                                                },
+                                            },
+                                        ],
+                                        { cancelable: false }
                                     );
-                                    navigation.reset({
-                                        index: 0,
-                                        routes: [{ name: "SignIn" }],
-                                    });
                                 }}
                                 name={"Log Out"}
                                 iconName={"log-out"}

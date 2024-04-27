@@ -1,5 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, Dimensions, Image } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+    View,
+    Text,
+    Button,
+    Dimensions,
+    Image,
+    StyleSheet,
+    TouchableOpacity,
+    Share,
+    Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SubNavHeader from "../../components/top nav/SubNavHeader";
 import { COLORS, styles } from "../../styles";
@@ -23,6 +33,8 @@ import Animated, {
 } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
+import ViewShot, { captureRef } from "react-native-view-shot";
+import { Feather } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HEIGHT = 480;
@@ -118,166 +130,351 @@ export default function Certificate({ navigation }) {
             ],
         };
     }, []);
+
+    const viewShotRef = useRef();
+
+    // const shareImage = async () => {
+    //     try {
+    //         const imageURI = await viewShotRef.current.capture();
+
+    //         await Share.share({
+    //             url: imageURI,
+    //         });
+    //     } catch (error) {
+    //         console.log("Error sharing image: ", error);
+    //     }
+    // };
+
+    // const onShare = async () => {
+    //     try {
+    //         const result = await Share.share({
+    //             message:
+    //                 "React Native | A framework for building native apps using React",
+    //         });
+    //         if (result.action === Share.sharedAction) {
+    //             if (result.activityType) {
+    //                 // shared with activity type of result.activityType
+    //             } else {
+    //                 // shared
+    //             }
+    //         } else if (result.action === Share.dismissedAction) {
+    //             // dismissed
+    //         }
+    //     } catch (error: any) {
+    //         Alert.alert(error.message);
+    //     }
+    // };
+
+    const Certificate = () => {
+        return (
+            <View
+                ref={viewShotRef}
+                style={[
+                    {
+                        height: CARD_HEIGHT,
+                        width: CARD_WIDTH,
+                        backgroundColor: COLORS.GREEN,
+                        position: "absolute",
+                        borderRadius: 15,
+                        zIndex: 300,
+                        padding: 25,
+                        gap: 50,
+                        alignItems: "center",
+                    },
+                ]}
+            >
+                <Image
+                    source={Sphere}
+                    style={{
+                        width: 220,
+                        height: 220,
+                        marginTop: 20,
+                    }}
+                />
+                <View
+                    style={{
+                        position: "absolute",
+                        left: 20,
+                        bottom: 100,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: COLORS.OFFWHITE,
+                            fontSize: 28,
+                            fontWeight: "700",
+                        }}
+                    >
+                        {name}
+                    </Text>
+                    <Text
+                        style={{
+                            color: COLORS.OFFWHITE,
+                            fontSize: 16,
+                            fontWeight: "600",
+                        }}
+                    >
+                        Early Adopter
+                    </Text>
+                </View>
+
+                <View
+                    style={{
+                        borderWidth: 1.5,
+                        padding: 5,
+                        paddingHorizontal: 10,
+                        borderColor: COLORS.OFFWHITE,
+                        alignSelf: "flex-start",
+                        borderRadius: 5,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10,
+                        position: "absolute",
+                        bottom: 20,
+                        left: 20,
+                    }}
+                >
+                    <Text
+                        style={{
+                            color: COLORS.OFFWHITE,
+                            fontWeight: "600",
+                            fontSize: 13,
+                        }}
+                    >
+                        UM-Eco Mobility
+                    </Text>
+                    <View
+                        style={{
+                            backgroundColor: COLORS.OFFWHITE,
+                            borderRadius: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: COLORS.OFFWHITE,
+                                fontSize: 6,
+                            }}
+                        >
+                            |
+                        </Text>
+                    </View>
+                    <Text
+                        style={{
+                            color: COLORS.OFFWHITE,
+                            fontSize: 13,
+                            fontWeight: "600",
+                        }}
+                    >
+                        {new Date(joinedDate * 1000).toLocaleDateString()}
+                    </Text>
+                </View>
+
+                <Image
+                    source={Logo}
+                    style={{
+                        width: 30,
+                        height: 30,
+                        position: "absolute",
+                        bottom: 20,
+                        right: 20,
+                    }}
+                />
+
+                <View
+                    style={{
+                        position: "absolute",
+                        bottom: "10%",
+                        left: "10%",
+                        flexDirection: "row",
+                    }}
+                ></View>
+            </View>
+        );
+    };
+
+    const onShare = async () => {
+        try {
+            const uri = await captureRef(viewShotRef, {
+                format: "png",
+                quality: 1,
+            });
+
+            const result = await Share.share({
+                url: uri,
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error: any) {
+            Alert.alert(error.message);
+        }
+    };
+
     return (
         <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
-            <SubNavHeader
-                navigation={navigation}
-                subNavStyle={{ marginLeft: -10 }}
-            />
-
-            <View style={{ gap: 10 }}>
-                <GestureDetector gesture={gesture}>
-                    <Animated.View
-                        style={[
-                            {
-                                height: CARD_HEIGHT,
-                                width: CARD_WIDTH,
-                                // backgroundColor: "black",
-                                backgroundColor: COLORS.GREEN,
-                                position: "absolute",
-                                borderRadius: 15,
-                                zIndex: 300,
-                                padding: 25,
-                                gap: 50,
-                                alignItems: "center",
-                            },
-                            rStyle,
-                        ]}
-                    >
-                        <Image
-                            source={Sphere}
-                            style={{
-                                width: 220,
-                                height: 220,
-                                marginTop: 20,
-                            }}
-                        />
-                        <View
-                            style={{
-                                position: "absolute",
-                                left: 20,
-                                bottom: 100,
-                            }}
+            <SubNavHeader navigation={navigation} title={"Certificate"} />
+            <View style={{ display: "flex", gap: 20 }}>
+                {/* <View style={{ gap: 10 }}>
+                    <GestureDetector gesture={gesture}>
+                        <Animated.View
+                            style={[
+                                {
+                                    height: CARD_HEIGHT,
+                                    width: CARD_WIDTH,
+                                    backgroundColor: COLORS.GREEN,
+                                    position: "absolute",
+                                    borderRadius: 15,
+                                    zIndex: 300,
+                                    padding: 25,
+                                    gap: 50,
+                                    alignItems: "center",
+                                },
+                                rStyle,
+                            ]}
                         >
-                            <Text
+                            <Image
+                                source={Sphere}
                                 style={{
-                                    color: COLORS.OFFWHITE,
-                                    fontSize: 28,
-                                    fontWeight: "700",
+                                    width: 220,
+                                    height: 220,
+                                    marginTop: 20,
                                 }}
-                            >
-                                {name}
-                            </Text>
-                            <Text
-                                style={{
-                                    color: COLORS.OFFWHITE,
-                                    fontSize: 16,
-                                    fontWeight: "600",
-                                }}
-                            >
-                                Early Adopter
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                borderWidth: 1.5,
-                                padding: 5,
-                                paddingHorizontal: 10,
-                                borderColor: COLORS.OFFWHITE,
-                                alignSelf: "flex-start",
-                                borderRadius: 5,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                gap: 10,
-                                position: "absolute",
-                                bottom: 20,
-                                left: 20,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    color: COLORS.OFFWHITE,
-                                    fontWeight: "600",
-                                    fontSize: 13,
-                                }}
-                            >
-                                UM-Eco Mobility
-                            </Text>
+                            />
                             <View
                                 style={{
-                                    backgroundColor: COLORS.OFFWHITE,
-                                    borderRadius: 10,
+                                    position: "absolute",
+                                    left: 20,
+                                    bottom: 100,
                                 }}
                             >
                                 <Text
                                     style={{
                                         color: COLORS.OFFWHITE,
-                                        fontSize: 6,
+                                        fontSize: 28,
+                                        fontWeight: "700",
                                     }}
                                 >
-                                    |
+                                    {name}
+                                </Text>
+                                <Text
+                                    style={{
+                                        color: COLORS.OFFWHITE,
+                                        fontSize: 16,
+                                        fontWeight: "600",
+                                    }}
+                                >
+                                    Early Adopter
                                 </Text>
                             </View>
-                            <Text
+
+                            <View
                                 style={{
-                                    color: COLORS.OFFWHITE,
-                                    fontSize: 13,
-                                    fontWeight: "600",
+                                    borderWidth: 1.5,
+                                    padding: 5,
+                                    paddingHorizontal: 10,
+                                    borderColor: COLORS.OFFWHITE,
+                                    alignSelf: "flex-start",
+                                    borderRadius: 5,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    position: "absolute",
+                                    bottom: 20,
+                                    left: 20,
                                 }}
                             >
-                                {new Date(
-                                    joinedDate * 1000
-                                ).toLocaleDateString()}
-                            </Text>
-                        </View>
+                                <Text
+                                    style={{
+                                        color: COLORS.OFFWHITE,
+                                        fontWeight: "600",
+                                        fontSize: 13,
+                                    }}
+                                >
+                                    UM-Eco Mobility
+                                </Text>
+                                <View
+                                    style={{
+                                        backgroundColor: COLORS.OFFWHITE,
+                                        borderRadius: 10,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: COLORS.OFFWHITE,
+                                            fontSize: 6,
+                                        }}
+                                    >
+                                        |
+                                    </Text>
+                                </View>
+                                <Text
+                                    style={{
+                                        color: COLORS.OFFWHITE,
+                                        fontSize: 13,
+                                        fontWeight: "600",
+                                    }}
+                                >
+                                    {new Date(
+                                        joinedDate * 1000
+                                    ).toLocaleDateString()}
+                                </Text>
+                            </View>
 
-                        <Image
-                            source={Logo}
-                            style={{
-                                width: 30,
-                                height: 30,
-                                position: "absolute",
-                                bottom: 20,
-                                right: 20,
-                            }}
-                        />
+                            <Image
+                                source={Logo}
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                    position: "absolute",
+                                    bottom: 20,
+                                    right: 20,
+                                }}
+                            />
 
-                        <View
-                            style={{
-                                position: "absolute",
-                                bottom: "10%",
-                                left: "10%",
-                                flexDirection: "row",
-                            }}
-                        ></View>
-                    </Animated.View>
-                </GestureDetector>
+                            <View
+                                style={{
+                                    position: "absolute",
+                                    bottom: "10%",
+                                    left: "10%",
+                                    flexDirection: "row",
+                                }}
+                            ></View>
+                        </Animated.View>
+                    </GestureDetector>
+                </View> */}
+
+                <Certificate />
+                <TouchableOpacity
+                    onPress={onShare}
+                    style={{
+                        marginTop: 500,
+                    }}
+                >
+                    <View
+                        style={{
+                            backgroundColor: "white",
+                            padding: 20,
+                            borderRadius: 10,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+                            Share
+                        </Text>
+
+                        <Feather name={"share"} size={20} color="black" />
+                    </View>
+                </TouchableOpacity>
             </View>
-
-            {/* {userData && (
-                   <View style={{ gap: 10 }}>
-                       <InputWithLabel
-                           text={"Name"}
-                           value={name}
-                           onChangeText={(text) => setName(text)}
-                           disabled={loading}
-                       />
-
-                       <InputWithLabel
-                           disabled={true}
-                           text={"Email"}
-                           value={email}
-                           onChangeText={(text) => setEmail(text)}
-                       />
-
-                       <LoadButton
-                           onPress={updateProfile}
-                           loading={loading}
-                           text="Update Profile"
-                       />
-                   </View>
-               )} */}
         </SafeAreaView>
     );
 }

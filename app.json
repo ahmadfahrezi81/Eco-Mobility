@@ -13,20 +13,39 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "runtimeVersion": {
+                "policy": "appVersion"
+            },
+            "bundleIdentifier": "com.goody8127.rnnavigation",
+            "config": {
+                "googleMapsApiKey": "AIzaSyDCWeXo_prbbeYnbFAPeJuIDNv3dmoBj_Q"
+            }
         },
         "android": {
+            "package": "com.goody8127.rnnavigation",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "androidNavigationBar": {
-                "visible": "always",
-                "backgroundColor": "#00000000"
-            }
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyDCWeXo_prbbeYnbFAPeJuIDNv3dmoBj_Q"
+                }
+            },
+            "runtimeVersion": "1.0.0"
         },
         "web": {
             "favicon": "./assets/favicon.png"
-        }
+        },
+        "extra": {
+            "eas": {
+                "projectId": "08e1edfb-b612-47a7-a0a4-ef26354950c8"
+            }
+        },
+        "updates": {
+            "url": "https://u.expo.dev/08e1edfb-b612-47a7-a0a4-ef26354950c8"
+        },
+        "owner": "goody8127"
     }
 }

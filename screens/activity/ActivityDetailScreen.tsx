@@ -14,6 +14,7 @@ import SubNavHeader from "../../components/top nav/SubNavHeader";
 import CustomMarker, { getMarkerIcon } from "../../components/map/CustomMarker";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import moment from "moment";
 
 export default function DetailScreen({ route, navigation }: any) {
     const { data }: { data: TrackingActivity } = route.params;
@@ -27,7 +28,9 @@ export default function DetailScreen({ route, navigation }: any) {
         >
             <SubNavHeader
                 navigation={navigation}
-                subNavStyle={{ marginLeft: -10 }}
+                title={moment(data.endTime.seconds * 1000).format(
+                    "ddd, MMM D YYYY"
+                )}
             />
 
             {data && (

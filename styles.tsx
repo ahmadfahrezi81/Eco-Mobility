@@ -36,4 +36,10 @@ export const styles = StyleSheet.create({
         // marginBottom: 30,
         // marginTop: 40,
     },
+    subsubtitle: {
+        fontSize: 22,
+        fontWeight: "800",
+        // marginBottom: 30,
+        // marginTop: 40,
+    },
 });

@@ -15,6 +15,7 @@ import EmissionChart from "./screens/home/EmissionChartScreen";
 
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import TermsAndCondition from "./screens/TermsAndCondition";
 
 const Stack = createStackNavigator();
 
@@ -113,6 +114,14 @@ export default function App() {
                         <Stack.Screen
                             name="Privacy"
                             component={PrivacyScreen}
+                            options={{
+                                headerShown: false,
+                                headerBackTitle: null,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="TermsAndCondition"
+                            component={TermsAndCondition}
                             options={{
                                 headerShown: false,
                                 headerBackTitle: null,

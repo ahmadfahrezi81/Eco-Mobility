@@ -49,6 +49,7 @@ const SignUpScreen = ({ navigation }) => {
                     email,
                     name,
                     joinedDate: new Date(),
+                    lastUpdate: new Date(),
                 });
 
                 const leaderboardRef = doc(

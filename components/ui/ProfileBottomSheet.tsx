@@ -98,7 +98,10 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
                     `users/${userData.uid}`
                 );
 
-                await updateDoc(userRef, { profileImgURL: downloadURL });
+                await updateDoc(userRef, {
+                    profileImgURL: downloadURL,
+                    lastUpdate: new Date(),
+                });
 
                 const leaderboardRef = await doc(
                     FIRESTORE_DB,

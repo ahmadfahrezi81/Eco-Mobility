@@ -56,7 +56,7 @@ export default function ProfileDetail({ navigation }) {
 
         const userRef = await doc(FIRESTORE_DB, `users/${userData.uid}`);
 
-        await updateDoc(userRef, { name: name });
+        await updateDoc(userRef, { name: name, lastUpdated: new Date() });
 
         const leaderboardRef = await doc(
             FIRESTORE_DB,
@@ -74,10 +74,7 @@ export default function ProfileDetail({ navigation }) {
 
     return (
         <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
-            <SubNavHeader
-                navigation={navigation}
-                subNavStyle={{ marginLeft: -10 }}
-            />
+            <SubNavHeader navigation={navigation} title={"Edit Account"} />
 
             {userData && (
                 <View style={{ gap: 10 }}>
