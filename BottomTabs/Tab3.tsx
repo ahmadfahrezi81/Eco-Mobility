@@ -154,7 +154,7 @@ export default function Tab3({ navigation }) {
                 <>
                     <FlatList
                         showsVerticalScrollIndicator={false}
-                        style={{ columnGap: 20 }}
+                        style={{ columnGap: 20, marginBottom: 20 }}
                         data={leaderboard}
                         keyExtractor={(item) => item.userId}
                         renderItem={({ item }) => (

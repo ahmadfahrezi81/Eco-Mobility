@@ -185,8 +185,7 @@ export default function DistanceCart({ navigation }) {
                     <Text style={{ fontSize: 16 }}>km per day (avg)</Text>
                 </View>
                 <Text style={{ fontSize: 16, marginBottom: 8 }}>
-                    Your longest distance
-                    {highestThisWeek.toFixed(2)}
+                    Your longest distance {highestThisWeek.toFixed(2)}
                     km (this week )
                 </Text>
 
@@ -230,47 +229,52 @@ export default function DistanceCart({ navigation }) {
                 >
                     This week
                 </Text>
-                {chartData.labels
-                    .slice()
-                    .reverse()
-                    .map((label, index) => (
-                        <View
-                            key={index}
-                            style={{
-                                borderRadius: 10,
-                                backgroundColor: COLORS.WHITE,
-                                padding: 18,
-                                flexDirection: "row",
-                                marginBottom: 5,
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                            }}
-                        >
-                            <Text style={{ fontSize: 18 }}>
-                                {index === 0
-                                    ? "Today"
-                                    : index === 1
-                                    ? "Yesterday"
-                                    : label}
-                            </Text>
+                <View style={{ marginBottom: 20 }}>
+                    {chartData.labels
+                        .slice()
+                        .reverse()
+                        .map((label, index) => (
                             <View
+                                key={index}
                                 style={{
+                                    borderRadius: 10,
+                                    backgroundColor: COLORS.WHITE,
+                                    padding: 18,
                                     flexDirection: "row",
-                                    alignItems: "baseline",
-                                    gap: 4,
+                                    marginBottom: 5,
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
                                 }}
                             >
-                                <Text
-                                    style={{ fontSize: 22, fontWeight: "500" }}
-                                >
-                                    {chartData.datasets[0].data[
-                                        chartData.labels.length - index - 1
-                                    ].toFixed(2)}
+                                <Text style={{ fontSize: 18 }}>
+                                    {index === 0
+                                        ? "Today"
+                                        : index === 1
+                                        ? "Yesterday"
+                                        : label}
                                 </Text>
-                                <Text style={{ fontSize: 14 }}>KM</Text>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "baseline",
+                                        gap: 4,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 22,
+                                            fontWeight: "500",
+                                        }}
+                                    >
+                                        {chartData.datasets[0].data[
+                                            chartData.labels.length - index - 1
+                                        ].toFixed(2)}
+                                    </Text>
+                                    <Text style={{ fontSize: 14 }}>KM</Text>
+                                </View>
                             </View>
-                        </View>
-                    ))}
+                        ))}
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
