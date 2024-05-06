@@ -32,6 +32,15 @@ const SignUpScreen = ({ navigation }) => {
     const signUp = async () => {
         setLoading(true);
 
+        // Check if the email ends with @siswa.um.edu
+        if (!email.endsWith("@siswa.um.edu.my")) {
+            alert(
+                "Please use your siswamail to sign up it should ends with @siswa.um.edu.my"
+            );
+            setLoading(false);
+            return; // Exit the function if the condition is not met.
+        }
+
         try {
             const response = await createUserWithEmailAndPassword(
                 auth,
