@@ -37,6 +37,7 @@ const SkeletonCommonProps = {
 
 export default function Tab4({ navigation }) {
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
 
@@ -67,6 +68,7 @@ export default function Tab4({ navigation }) {
                             } else {
                                 console.log("No such document!");
                             }
+                            setLoading(false);
                         },
                         handleError
                     );
@@ -92,104 +94,181 @@ export default function Tab4({ navigation }) {
         >
             <Text style={styles.title}>Manage</Text>
 
-            {/* <Button title="press" onPress={handlePresentModalPress} /> */}
-            {/* <Skeleton.Group show={loading}> */}
-            <View style={{ gap: 30 }}>
-                <Skeleton.Group show={userData === null}>
-                    <Skeleton
-                        height={160}
-                        width={"100%"}
-                        {...SkeletonCommonProps}
-                    >
-                        {userData && (
-                            <ManageCard
-                                navigation={navigation}
-                                user={userData}
-                            />
-                        )}
-                    </Skeleton>
+            {loading ? (
+                <Text>Loading...</Text>
+            ) : (
+                <View style={{ gap: 30 }}>
+                    {userData && (
+                        <ManageCard navigation={navigation} user={userData} />
+                    )}
 
                     <View style={{ gap: 10 }}>
-                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
-                            <ManageButton
-                                onPress={() =>
-                                    navigation.navigate("Certificate")
-                                }
-                                name={"Certificate"}
-                                iconName={"award"}
-                            />
-                        </Skeleton>
+                        <ManageButton
+                            onPress={() => navigation.navigate("Certificate")}
+                            name={"Certificate"}
+                            iconName={"award"}
+                        />
 
-                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
-                            <ManageButton
-                                onPress={() => navigation.navigate("Privacy")}
-                                name={"Privacy and Security"}
-                                iconName={"shield"}
-                            />
-                        </Skeleton>
-                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
-                            <ManageButton
-                                onPress={() =>
-                                    navigation.navigate("TermsAndCondition")
-                                }
-                                name={"Terms & Condition"}
-                                iconName={"file-text"}
-                            />
-                        </Skeleton>
+                        <ManageButton
+                            onPress={() => navigation.navigate("Privacy")}
+                            name={"Privacy and Security"}
+                            iconName={"shield"}
+                        />
 
-                        <Skeleton width={"100%"} {...SkeletonCommonProps}>
-                            <ManageButton
-                                // onPress={async () => {
-                                //     await FIREBASE_AUTH.signOut();
-                                //     // Remove user credentials from AsyncStorage
-                                //     await AsyncStorage.removeItem(
-                                //         "credentials"
-                                //     );
-                                //     navigation.reset({
-                                //         index: 0,
-                                //         routes: [{ name: "SignIn" }],
-                                //     });
-                                // }}
-                                onPress={() => {
-                                    Alert.alert(
-                                        "Confirm logout",
-                                        "Are you sure you want to logout?",
-                                        [
-                                            {
-                                                text: "No",
-                                                onPress: () =>
-                                                    console.log(
-                                                        "Cancel Pressed"
-                                                    ),
-                                                style: "cancel",
+                        <ManageButton
+                            onPress={() =>
+                                navigation.navigate("TermsAndCondition")
+                            }
+                            name={"Terms & Condition"}
+                            iconName={"file-text"}
+                        />
+
+                        <ManageButton
+                            onPress={() => {
+                                Alert.alert(
+                                    "Confirm logout",
+                                    "Are you sure you want to logout?",
+                                    [
+                                        {
+                                            text: "No",
+                                            onPress: () =>
+                                                console.log("Cancel Pressed"),
+                                            style: "cancel",
+                                        },
+                                        {
+                                            text: "Yes",
+                                            onPress: async () => {
+                                                await FIREBASE_AUTH.signOut();
+                                                await AsyncStorage.removeItem(
+                                                    "credentials"
+                                                );
+                                                navigation.reset({
+                                                    index: 0,
+                                                    routes: [
+                                                        { name: "SignIn" },
+                                                    ],
+                                                });
                                             },
-                                            {
-                                                text: "Yes",
-                                                onPress: async () => {
-                                                    await FIREBASE_AUTH.signOut();
-                                                    await AsyncStorage.removeItem(
-                                                        "credentials"
-                                                    );
-                                                    navigation.reset({
-                                                        index: 0,
-                                                        routes: [
-                                                            { name: "SignIn" },
-                                                        ],
-                                                    });
-                                                },
-                                            },
-                                        ],
-                                        { cancelable: false }
-                                    );
-                                }}
-                                name={"Log Out"}
-                                iconName={"log-out"}
-                            />
-                        </Skeleton>
+                                        },
+                                    ],
+                                    { cancelable: false }
+                                );
+                            }}
+                            name={"Log Out"}
+                            iconName={"log-out"}
+                        />
                     </View>
-                </Skeleton.Group>
-            </View>
+                </View>
+            )}
             <ProfileBottomSheetModal ref={bottomSheetRef} />
         </SafeAreaView>
     );
+
+    // return (
+    //     <SafeAreaView
+    //         edges={["right", "left", "top"]}
+    //         style={[styles.container]}
+    //     >
+    //         <Text style={styles.title}>Manage</Text>
+
+    //         {/* <Button title="press" onPress={handlePresentModalPress} /> */}
+    //         {/* <Skeleton.Group show={loading}> */}
+    //         <View style={{ gap: 30 }}>
+    //             <Skeleton.Group show={userData === null}>
+    //                 <Skeleton
+    //                     height={160}
+    //                     width={"100%"}
+    //                     {...SkeletonCommonProps}
+    //                 >
+    //                     {userData && (
+    //                         <ManageCard
+    //                             navigation={navigation}
+    //                             user={userData}
+    //                         />
+    //                     )}
+    //                 </Skeleton>
+
+    //                 <View style={{ gap: 10 }}>
+    //                     <Skeleton width={"100%"} {...SkeletonCommonProps}>
+    //                         <ManageButton
+    //                             onPress={() =>
+    //                                 navigation.navigate("Certificate")
+    //                             }
+    //                             name={"Certificate"}
+    //                             iconName={"award"}
+    //                         />
+    //                     </Skeleton>
+
+    //                     <Skeleton width={"100%"} {...SkeletonCommonProps}>
+    //                         <ManageButton
+    //                             onPress={() => navigation.navigate("Privacy")}
+    //                             name={"Privacy and Security"}
+    //                             iconName={"shield"}
+    //                         />
+    //                     </Skeleton>
+    //                     <Skeleton width={"100%"} {...SkeletonCommonProps}>
+    //                         <ManageButton
+    //                             onPress={() =>
+    //                                 navigation.navigate("TermsAndCondition")
+    //                             }
+    //                             name={"Terms & Condition"}
+    //                             iconName={"file-text"}
+    //                         />
+    //                     </Skeleton>
+
+    //                     <Skeleton width={"100%"} {...SkeletonCommonProps}>
+    //                         <ManageButton
+    //                             // onPress={async () => {
+    //                             //     await FIREBASE_AUTH.signOut();
+    //                             //     // Remove user credentials from AsyncStorage
+    //                             //     await AsyncStorage.removeItem(
+    //                             //         "credentials"
+    //                             //     );
+    //                             //     navigation.reset({
+    //                             //         index: 0,
+    //                             //         routes: [{ name: "SignIn" }],
+    //                             //     });
+    //                             // }}
+    //                             onPress={() => {
+    //                                 Alert.alert(
+    //                                     "Confirm logout",
+    //                                     "Are you sure you want to logout?",
+    //                                     [
+    //                                         {
+    //                                             text: "No",
+    //                                             onPress: () =>
+    //                                                 console.log(
+    //                                                     "Cancel Pressed"
+    //                                                 ),
+    //                                             style: "cancel",
+    //                                         },
+    //                                         {
+    //                                             text: "Yes",
+    //                                             onPress: async () => {
+    //                                                 await FIREBASE_AUTH.signOut();
+    //                                                 await AsyncStorage.removeItem(
+    //                                                     "credentials"
+    //                                                 );
+    //                                                 navigation.reset({
+    //                                                     index: 0,
+    //                                                     routes: [
+    //                                                         { name: "SignIn" },
+    //                                                     ],
+    //                                                 });
+    //                                             },
+    //                                         },
+    //                                     ],
+    //                                     { cancelable: false }
+    //                                 );
+    //                             }}
+    //                             name={"Log Out"}
+    //                             iconName={"log-out"}
+    //                         />
+    //                     </Skeleton>
+    //                 </View>
+    //             </Skeleton.Group>
+    //         </View>
+    //         <ProfileBottomSheetModal ref={bottomSheetRef} />
+    //     </SafeAreaView>
+    // );
 }

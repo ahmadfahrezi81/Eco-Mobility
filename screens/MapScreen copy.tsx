@@ -96,7 +96,7 @@ export default function MapScreen({ navigation }) {
 
     const mapRef = useRef<MapView>(null);
 
-    // useUserLocationChange(() => {});
+    useUserLocationChange(() => {});
 
     const addDataToFirestore = async ({
         distance,
@@ -164,49 +164,29 @@ export default function MapScreen({ navigation }) {
         }
     };
 
-    const handleUserLocationChange = (event: any) => {
+    const handleUserLocationChange = debounce((event: any) => {
         if (isTracking) {
             const { latitude, longitude } = event.nativeEvent.coordinate;
             setCurrentLocation({ latitude, longitude });
 
-            // if (mapRef.current) {
-            //     mapRef.current.animateToRegion({
-            //         latitude,
-            //         longitude,
-            //         latitudeDelta: 0.0922,
-            //         longitudeDelta: 0.0421,
-            //     });
-            // }
+            if (mapRef.current) {
+                mapRef.current.animateToRegion({
+                    latitude,
+                    longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                });
+            }
 
-            //if possible this should only ran sometimes
-            // setCurrentMovementTrails((prevTrail) => [
-            //     ...prevTrail,
-            //     { latitude, longitude },
-            // ]);
+            setCurrentMovementTrails((prevTrail) => [
+                ...prevTrail,
+                { latitude, longitude },
+            ]);
 
-            // const distance = calculateTotalDistance(currentMovementTrails);
-            // setTotalDistance(distance);
-
-            debounce(() => {
-                if (mapRef.current) {
-                    mapRef.current.animateToRegion({
-                        latitude,
-                        longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    });
-                }
-
-                setCurrentMovementTrails((prevTrail) => [
-                    ...prevTrail,
-                    { latitude, longitude },
-                ]);
-
-                const distance = calculateTotalDistance(currentMovementTrails);
-                setTotalDistance(distance);
-            }, 5000)();
+            const distance = calculateTotalDistance(currentMovementTrails);
+            setTotalDistance(distance);
         }
-    };
+    }, 1000);
 
     const handleToggleTracking = () => {
         if (!isTracking) {
@@ -242,27 +222,27 @@ export default function MapScreen({ navigation }) {
         setSelectedTransport(transport);
     };
 
-    const handleMapPress = (event: any) => {
-        const { latitude, longitude } = event.nativeEvent.coordinate;
-        setCurrentLocation({ latitude, longitude });
+    // const handleMapPress = (event: any) => {
+    //     const { latitude, longitude } = event.nativeEvent.coordinate;
+    //     setCurrentLocation({ latitude, longitude });
 
-        setCurrentMovementTrails((prevTrail) => [
-            ...prevTrail,
-            { latitude, longitude },
-        ]);
+    //     setCurrentMovementTrails((prevTrail) => [
+    //         ...prevTrail,
+    //         { latitude, longitude },
+    //     ]);
 
-        if (mapRef.current) {
-            mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            });
-        }
+    //     if (mapRef.current) {
+    //         mapRef.current.animateToRegion({
+    //             latitude,
+    //             longitude,
+    //             latitudeDelta: 0.0922,
+    //             longitudeDelta: 0.0421,
+    //         });
+    //     }
 
-        const distance = calculateTotalDistance(currentMovementTrails);
-        setTotalDistance(distance);
-    };
+    //     const distance = calculateTotalDistance(currentMovementTrails);
+    //     setTotalDistance(distance);
+    // };
 
     return (
         <View style={styles.container}>
@@ -273,17 +253,17 @@ export default function MapScreen({ navigation }) {
                 style={styles.map}
                 provider={PROVIDER_GOOGLE}
                 region={{
-                    latitude: 3.1232,
-                    longitude: 101.6544,
+                    latitude: currentLocation.latitude,
+                    longitude: currentLocation.longitude,
                     latitudeDelta: delta,
                     longitudeDelta: delta,
                 }}
                 onUserLocationChange={handleUserLocationChange}
                 minZoomLevel={15}
                 zoomEnabled={true}
-                // showsCompass={true}
+                showsCompass={true}
                 showsUserLocation={true}
-                onPress={handleMapPress}
+                // onPress={handleMapPress}
                 // initialRegion={
                 //     currentLocation
                 //         ? {
