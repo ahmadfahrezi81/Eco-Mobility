@@ -16,6 +16,8 @@ import EmissionChart from "./screens/home/EmissionChartScreen";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import TermsAndCondition from "./screens/TermsAndCondition";
+import { StatusBar } from "react-native";
+import { COLORS } from "./styles";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +25,11 @@ export default function App() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <BottomSheetModalProvider>
+                <StatusBar
+                    barStyle="dark-content"
+                    backgroundColor={COLORS.OFFWHITE}
+                />
+
                 <NavigationContainer>
                     <Stack.Navigator initialRouteName="SignIn">
                         {/* <Stack.Screen name="Auth" component={AuthScreen} /> */}

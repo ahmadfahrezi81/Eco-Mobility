@@ -12,7 +12,7 @@ const AbsoluteBackButton = ({ navigation }) => {
                 <View
                     style={{
                         position: "absolute",
-                        top: getStatusBarHeight() + 5,
+                        top: 20,
                         left: 20,
                         right: 0,
                         flexDirection: "row",
@@ -42,7 +42,7 @@ const AbsoluteBackButton = ({ navigation }) => {
                 <SafeAreaView
                     style={{
                         position: "absolute",
-                        top: 5,
+                        top: 20,
                         left: 20,
                         right: 0,
                         flexDirection: "row",

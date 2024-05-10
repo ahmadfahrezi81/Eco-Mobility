@@ -36,3 +36,7 @@ yarn-error.*
 
 
 # firebaseConfig.ts
+
+
+android/
+ios/

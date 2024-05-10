@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View, Text, Button, TouchableOpacity, StatusBar } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { FIREBASE_APP, FIRESTORE_DB } from "../firebaseConfig";
 import {
