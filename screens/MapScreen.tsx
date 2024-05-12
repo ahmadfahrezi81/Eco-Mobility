@@ -29,10 +29,11 @@ import { COLORS } from "../styles";
 
 import debounce from "lodash.debounce";
 
-const delta = 0.0922; // approximately 10km
+// const delta = 0.0922; // approximately 10km
 
 export default function MapScreen({ navigation }) {
     const [isTracking, setIsTracking] = useState(false);
+    //this is more like the green tag on top of the blue
     const [currentLocation, setCurrentLocation] = useState<Coordinate | null>();
     const [currentMovementTrails, setCurrentMovementTrails] = useState<
         Coordinate[]
@@ -43,6 +44,8 @@ export default function MapScreen({ navigation }) {
 
     const [selectedTransport, setSelectedTransport] =
         useState<string>("walking");
+
+    const [delta, setDelta] = useState(0.0922); // initial delta value
 
     const [totalDistance, setTotalDistance] = useState<number>(0);
     const [startTime, setStartTime] = useState<Timestamp>();
@@ -187,24 +190,29 @@ export default function MapScreen({ navigation }) {
             // const distance = calculateTotalDistance(currentMovementTrails);
             // setTotalDistance(distance);
 
-            debounce(() => {
-                if (mapRef.current) {
-                    mapRef.current.animateToRegion({
-                        latitude,
-                        longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    });
-                }
+            debounce(
+                () => {
+                    if (mapRef.current) {
+                        mapRef.current.animateToRegion({
+                            latitude,
+                            longitude,
+                            latitudeDelta: delta,
+                            longitudeDelta: delta * 0.5,
+                        });
+                    }
 
-                setCurrentMovementTrails((prevTrail) => [
-                    ...prevTrail,
-                    { latitude, longitude },
-                ]);
+                    setCurrentMovementTrails((prevTrail) => [
+                        ...prevTrail,
+                        { latitude, longitude },
+                    ]);
 
-                const distance = calculateTotalDistance(currentMovementTrails);
-                setTotalDistance(distance);
-            }, 5000)();
+                    const distance = calculateTotalDistance(
+                        currentMovementTrails
+                    );
+                    setTotalDistance(distance);
+                },
+                selectedTransport === "walking" ? 5000 : 1000
+            )();
         }
     };
 
@@ -273,17 +281,24 @@ export default function MapScreen({ navigation }) {
                 style={styles.map}
                 provider={PROVIDER_GOOGLE}
                 region={{
-                    latitude: 3.1232,
-                    longitude: 101.6544,
+                    // latitude: 3.1232,
+                    // longitude: 101.6544,
+                    latitude: currentLocation?.latitude || 3.1232,
+                    longitude: currentLocation?.longitude || 101.6544,
                     latitudeDelta: delta,
-                    longitudeDelta: delta,
+                    longitudeDelta: delta * 0.5,
                 }}
                 onUserLocationChange={handleUserLocationChange}
-                minZoomLevel={15}
+                onRegionChangeComplete={(region) => {
+                    setDelta(region.latitudeDelta);
+                }}
+                // minZoomLevel={17}
+                // maxZoomLevel={12}
                 zoomEnabled={true}
                 // showsCompass={true}
                 showsUserLocation={true}
                 onPress={handleMapPress}
+                zoomControlEnabled={true}
                 // initialRegion={
                 //     currentLocation
                 //         ? {

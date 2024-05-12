@@ -222,16 +222,19 @@ export default function Tab2({ navigation }) {
                 <Text>Loading...</Text>
             ) : (
                 <>
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        style={{ columnGap: 20 }}
-                        data={trackingActivities}
-                        keyExtractor={(item) => item.id}
-                        // ListHeaderComponent={() => (
-                        //     <Text style={styles.title}>Activity</Text>
-                        // )}
-                        renderItem={({ item }) => <ActivityList item={item} />}
-                    />
+                    {trackingActivities.length > 0 ? (
+                        <FlatList
+                            showsVerticalScrollIndicator={false}
+                            style={{ columnGap: 20 }}
+                            data={trackingActivities}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <ActivityList item={item} />
+                            )}
+                        />
+                    ) : (
+                        <Text>You currently have no activity</Text>
+                    )}
                 </>
             )}
         </SafeAreaView>
