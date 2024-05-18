@@ -35,6 +35,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
 import ViewShot, { captureRef } from "react-native-view-shot";
 import { Feather } from "@expo/vector-icons";
+import { blue } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HEIGHT = 480;
@@ -116,20 +117,20 @@ export default function Certificate({ navigation }) {
             rotateY.value = withTiming(0);
         });
 
-    const rStyle = useAnimatedStyle(() => {
-        const rotateXvalue = `${rotateX.value}deg`;
-        const rotateYvalue = `${rotateY.value}deg`;
+    // const rStyle = useAnimatedStyle(() => {
+    //     const rotateXvalue = `${rotateX.value}deg`;
+    //     const rotateYvalue = `${rotateY.value}deg`;
 
-        return {
-            transform: [
-                {
-                    perspective: 300,
-                },
-                { rotateX: rotateXvalue },
-                { rotateY: rotateYvalue },
-            ],
-        };
-    }, []);
+    //     return {
+    //         transform: [
+    //             {
+    //                 perspective: 300,
+    //             },
+    //             { rotateX: rotateXvalue },
+    //             { rotateY: rotateYvalue },
+    //         ],
+    //     };
+    // }, []);
 
     const viewShotRef = useRef();
 
@@ -186,11 +187,13 @@ export default function Certificate({ navigation }) {
                 <Image
                     source={Sphere}
                     style={{
-                        width: 220,
-                        height: 220,
-                        marginTop: 20,
+                        width: 230,
+                        height: 230,
+                        marginTop: 10,
+                        resizeMode: "contain",
                     }}
                 />
+
                 <View
                     style={{
                         position: "absolute",
@@ -201,8 +204,9 @@ export default function Certificate({ navigation }) {
                     <Text
                         style={{
                             color: COLORS.OFFWHITE,
-                            fontSize: 28,
-                            fontWeight: "700",
+                            fontSize: 22,
+                            fontWeight: "800",
+                            fontStyle: "italic",
                         }}
                     >
                         {name}
@@ -211,7 +215,8 @@ export default function Certificate({ navigation }) {
                         style={{
                             color: COLORS.OFFWHITE,
                             fontSize: 16,
-                            fontWeight: "600",
+                            fontWeight: "500",
+                            fontStyle: "italic",
                         }}
                     >
                         Early Adopter

@@ -169,7 +169,7 @@ export default function EmissionChart({ navigation }) {
 
     return (
         <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
-            <SubNavHeader navigation={navigation} title={"Emission"} />
+            <SubNavHeader navigation={navigation} title={"Emission Tracked"} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View
                     style={{
@@ -182,12 +182,12 @@ export default function EmissionChart({ navigation }) {
                     <Text style={{ fontSize: 36, fontWeight: "600" }}>
                         {average.toFixed(2)}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>
                         kg of CO2 per day (avg)
                     </Text>
                 </View>
                 <Text style={{ fontSize: 16, marginBottom: 8 }}>
-                    Your biggest emission {highestThisWeek.toFixed(2)}kg of CO2
+                    Your biggest emission {highestThisWeek.toFixed(2)} kg of CO2
                     (this week)
                 </Text>
 

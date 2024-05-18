@@ -182,11 +182,13 @@ export default function DistanceCart({ navigation }) {
                     <Text style={{ fontSize: 36, fontWeight: "600" }}>
                         {average.toFixed(2)}
                     </Text>
-                    <Text style={{ fontSize: 16 }}>km per day (avg)</Text>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>
+                        km per day (avg)
+                    </Text>
                 </View>
                 <Text style={{ fontSize: 16, marginBottom: 8 }}>
-                    Your longest distance {highestThisWeek.toFixed(2)}
-                    km (this week )
+                    Your longest distance {highestThisWeek.toFixed(2)} km (this
+                    week)
                 </Text>
 
                 <BarChart

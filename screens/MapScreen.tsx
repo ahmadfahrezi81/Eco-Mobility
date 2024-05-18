@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MapView, { Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import {
     ActivityIndicator,
+    Alert,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -28,6 +29,7 @@ import AbsoluteBackButton from "../components/top nav/AbsoluteBackButton";
 import { COLORS } from "../styles";
 
 import debounce from "lodash.debounce";
+import { getCurrentPositionAsync } from "expo-location";
 
 // const delta = 0.0922; // approximately 10km
 
@@ -45,7 +47,7 @@ export default function MapScreen({ navigation }) {
     const [selectedTransport, setSelectedTransport] =
         useState<string>("walking");
 
-    const [delta, setDelta] = useState(0.0922); // initial delta value
+    const [delta, setDelta] = useState(0.005); // initial delta value
 
     const [totalDistance, setTotalDistance] = useState<number>(0);
     const [startTime, setStartTime] = useState<Timestamp>();
@@ -55,6 +57,7 @@ export default function MapScreen({ navigation }) {
     //Time Tracker
     const [time, setTime] = useState({ h: "00", m: "00", s: "00" });
 
+    //this is for the clock/time counter
     useEffect(() => {
         let interval: NodeJS.Timeout;
         if (isTracking) {
@@ -92,6 +95,32 @@ export default function MapScreen({ navigation }) {
         });
         return unsubscribe;
     }, [navigation, loading]);
+
+    useEffect(() => {
+        const getCurrentLocation = async () => {
+            try {
+                const { coords } = await getCurrentPositionAsync();
+                const { latitude, longitude } = coords;
+                setCurrentLocation({ latitude, longitude });
+
+                console.log(coords);
+            } catch (error) {
+                console.error("Error getting current location:", error);
+                Alert.alert(
+                    "Location Error",
+                    "We were unable to retrieve your current location. Please make sure your location services are turned on and that you have granted location permission to the app.",
+                    [
+                        {
+                            text: "Go Back",
+                            onPress: () => navigation.goBack(),
+                        },
+                    ]
+                );
+            }
+        };
+
+        getCurrentLocation();
+    }, []);
 
     const formatTime = (time: number) => {
         return time < 10 ? `0${time}` : time.toString();
@@ -211,7 +240,7 @@ export default function MapScreen({ navigation }) {
                     );
                     setTotalDistance(distance);
                 },
-                selectedTransport === "walking" ? 5000 : 1000
+                selectedTransport === "walking" ? 5000 : 500
             )();
         }
     };
@@ -219,6 +248,15 @@ export default function MapScreen({ navigation }) {
     const handleToggleTracking = () => {
         if (!isTracking) {
             setStartTime(Timestamp.fromDate(new Date()));
+
+            if (mapRef.current && currentLocation) {
+                mapRef.current.animateToRegion({
+                    latitude: currentLocation.latitude,
+                    longitude: currentLocation.longitude,
+                    latitudeDelta: delta,
+                    longitudeDelta: delta * 0.5,
+                });
+            }
         }
 
         setIsTracking(!isTracking);
@@ -250,213 +288,232 @@ export default function MapScreen({ navigation }) {
         setSelectedTransport(transport);
     };
 
-    const handleMapPress = (event: any) => {
-        const { latitude, longitude } = event.nativeEvent.coordinate;
-        setCurrentLocation({ latitude, longitude });
+    // const handleMapPress = (event: any) => {
+    //     const { latitude, longitude } = event.nativeEvent.coordinate;
+    //     setCurrentLocation({ latitude, longitude });
 
-        setCurrentMovementTrails((prevTrail) => [
-            ...prevTrail,
-            { latitude, longitude },
-        ]);
+    //     setCurrentMovementTrails((prevTrail) => [
+    //         ...prevTrail,
+    //         { latitude, longitude },
+    //     ]);
 
-        if (mapRef.current) {
-            mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            });
-        }
+    //     if (mapRef.current) {
+    //         mapRef.current.animateToRegion({
+    //             latitude,
+    //             longitude,
+    //             latitudeDelta: 0.0922,
+    //             longitudeDelta: 0.0421,
+    //         });
+    //     }
 
-        const distance = calculateTotalDistance(currentMovementTrails);
-        setTotalDistance(distance);
-    };
+    //     const distance = calculateTotalDistance(currentMovementTrails);
+    //     setTotalDistance(distance);
+    // };
 
     return (
         <View style={styles.container}>
-            <AbsoluteBackButton navigation={navigation} />
+            {currentLocation && (
+                <>
+                    <AbsoluteBackButton navigation={navigation} />
 
-            <MapView
-                ref={mapRef}
-                style={styles.map}
-                provider={PROVIDER_GOOGLE}
-                region={{
-                    // latitude: 3.1232,
-                    // longitude: 101.6544,
-                    latitude: currentLocation?.latitude || 3.1232,
-                    longitude: currentLocation?.longitude || 101.6544,
-                    latitudeDelta: delta,
-                    longitudeDelta: delta * 0.5,
-                }}
-                onUserLocationChange={handleUserLocationChange}
-                onRegionChangeComplete={(region) => {
-                    setDelta(region.latitudeDelta);
-                }}
-                // minZoomLevel={17}
-                // maxZoomLevel={12}
-                zoomEnabled={true}
-                // showsCompass={true}
-                showsUserLocation={true}
-                onPress={handleMapPress}
-                zoomControlEnabled={true}
-                // initialRegion={
-                //     currentLocation
-                //         ? {
-                //               latitude: currentLocation.latitude,
-                //               longitude: currentLocation.longitude,
-                //               latitudeDelta: delta,
-                //               longitudeDelta: delta,
-                //           }
-                //         : undefined
-                // }
-            >
-                {currentMovementTrails.length > 1 && (
-                    <Polyline
-                        coordinates={currentMovementTrails}
-                        strokeWidth={4}
-                        strokeColor="#FF0000"
-                    />
-                )}
-
-                {allMovementTrail.map((trail, index) => (
-                    <Polyline
-                        key={index}
-                        coordinates={trail}
-                        strokeWidth={4}
-                        strokeColor="#FF0000"
-                    />
-                ))}
-                {currentLocation && (
-                    <CustomMarker
-                        coordinate={currentLocation}
-                        transport={selectedTransport}
-                    />
-                )}
-            </MapView>
-
-            <View
-                style={{
-                    padding: 20,
-                    paddingBottom: 30,
-                    gap: 20,
-                    backgroundColor: COLORS.OFFWHITE,
-                }}
-            >
-                {isTracking && (
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
+                    <MapView
+                        ref={mapRef}
+                        style={styles.map}
+                        provider={PROVIDER_GOOGLE}
+                        // region={{
+                        //     // latitude: 3.1232,
+                        //     // longitude: 101.6544,
+                        //     latitude: currentLocation?.latitude || 3.1232,
+                        //     longitude: currentLocation?.longitude || 101.6544,
+                        //     latitudeDelta: delta,
+                        //     longitudeDelta: delta * 0.5,
+                        // }}
+                        onUserLocationChange={handleUserLocationChange}
+                        onRegionChangeComplete={(region) => {
+                            setDelta(region.latitudeDelta);
+                        }}
+                        zoomEnabled={true}
+                        showsUserLocation={true}
+                        // onPress={handleMapPress}
+                        zoomControlEnabled={true}
+                        initialRegion={{
+                            latitude: currentLocation?.latitude,
+                            longitude: currentLocation?.longitude,
+                            latitudeDelta: delta,
+                            longitudeDelta: delta * 0.5,
                         }}
                     >
-                        <View style={{ alignItems: "center" }}>
-                            <Text style={{ fontSize: 14, fontWeight: "300" }}>
-                                TIME
-                            </Text>
-                            <Text
-                                style={{ fontSize: 26, fontWeight: "bold" }}
-                            >{`${time.h}:${time.m}:${time.s}`}</Text>
-                        </View>
-
-                        <View style={{ alignItems: "center" }}>
-                            <Text style={{ fontSize: 14, fontWeight: "300" }}>
-                                DISTANCE (km)
-                            </Text>
-                            <Text style={{ fontSize: 26, fontWeight: "bold" }}>
-                                {totalDistance.toFixed(2)}
-                            </Text>
-                        </View>
-                    </View>
-                )}
-
-                {/* When tracking start this should disapear */}
-                {!isTracking && (
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            justifyContent: "space-around",
-                            paddingVertical: 5,
-                        }}
-                    >
-                        <VehicleSelectionButton
-                            transport="walking"
-                            selectedTransport={selectedTransport}
-                            onSelectTransport={handleTransportSelection}
-                            icon="walking"
-                        />
-                        <VehicleSelectionButton
-                            transport="motorcycle"
-                            selectedTransport={selectedTransport}
-                            onSelectTransport={handleTransportSelection}
-                            icon="motorcycle"
-                        />
-                        <VehicleSelectionButton
-                            transport="car"
-                            selectedTransport={selectedTransport}
-                            onSelectTransport={handleTransportSelection}
-                            icon="car"
-                        />
-                        <VehicleSelectionButton
-                            transport="bus"
-                            selectedTransport={selectedTransport}
-                            onSelectTransport={handleTransportSelection}
-                            icon="bus-alt"
-                        />
-                    </View>
-                )}
-
-                {isTracking ? (
-                    <TouchableOpacity
-                        onPress={handleToggleTracking}
-                        style={{
-                            padding: 17,
-                            backgroundColor: "transparent",
-                            alignItems: "center",
-                            borderRadius: 20,
-                            borderWidth: 3,
-                            borderColor: COLORS.GREEN,
-                        }}
-                    >
-                        {loading ? (
-                            <ActivityIndicator color={COLORS.OFFWHITE} />
-                        ) : (
-                            <Text
-                                style={{
-                                    color: COLORS.GREEN,
-                                    fontSize: 16,
-                                    fontWeight: "800",
-                                }}
-                            >
-                                STOP AND FINISH
-                            </Text>
+                        {currentMovementTrails.length > 1 && (
+                            <Polyline
+                                coordinates={currentMovementTrails}
+                                strokeWidth={4}
+                                strokeColor="#FF0000"
+                            />
                         )}
-                    </TouchableOpacity>
-                ) : (
-                    <TouchableOpacity
-                        onPress={handleToggleTracking}
+
+                        {allMovementTrail.map((trail, index) => (
+                            <Polyline
+                                key={index}
+                                coordinates={trail}
+                                strokeWidth={4}
+                                strokeColor="#FF0000"
+                            />
+                        ))}
+                        {currentLocation && (
+                            <CustomMarker
+                                coordinate={currentLocation}
+                                transport={selectedTransport}
+                            />
+                        )}
+                    </MapView>
+
+                    <View
                         style={{
                             padding: 20,
-                            backgroundColor: COLORS.GREEN,
-                            alignItems: "center",
-                            borderRadius: 20,
+                            paddingBottom: 30,
+                            gap: 20,
+                            backgroundColor: COLORS.OFFWHITE,
                         }}
                     >
-                        {loading ? (
-                            <ActivityIndicator color={COLORS.OFFWHITE} />
-                        ) : (
-                            <Text
+                        {isTracking && (
+                            <View
                                 style={{
-                                    color: COLORS.OFFWHITE,
-                                    fontSize: 16,
-                                    fontWeight: "800",
+                                    flexDirection: "row",
+                                    justifyContent: "space-evenly",
                                 }}
                             >
-                                START
-                            </Text>
+                                <View style={{ alignItems: "center" }}>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: "300",
+                                        }}
+                                    >
+                                        TIME
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 26,
+                                            fontWeight: "bold",
+                                        }}
+                                    >{`${time.h}:${time.m}:${time.s}`}</Text>
+                                </View>
+
+                                <View style={{ alignItems: "center" }}>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: "300",
+                                        }}
+                                    >
+                                        DISTANCE (km)
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 26,
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        {totalDistance.toFixed(2)}
+                                    </Text>
+                                </View>
+                            </View>
                         )}
-                    </TouchableOpacity>
-                )}
-            </View>
+
+                        {/* When tracking start this should disapear */}
+                        {!isTracking && (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    paddingVertical: 5,
+                                }}
+                            >
+                                <VehicleSelectionButton
+                                    transport="walking"
+                                    selectedTransport={selectedTransport}
+                                    onSelectTransport={handleTransportSelection}
+                                    icon="walking"
+                                />
+                                <VehicleSelectionButton
+                                    transport="motorcycle"
+                                    selectedTransport={selectedTransport}
+                                    onSelectTransport={handleTransportSelection}
+                                    icon="motorcycle"
+                                />
+                                <VehicleSelectionButton
+                                    transport="car"
+                                    selectedTransport={selectedTransport}
+                                    onSelectTransport={handleTransportSelection}
+                                    icon="car"
+                                />
+                                <VehicleSelectionButton
+                                    transport="bus"
+                                    selectedTransport={selectedTransport}
+                                    onSelectTransport={handleTransportSelection}
+                                    icon="bus-alt"
+                                />
+                            </View>
+                        )}
+
+                        {isTracking ? (
+                            <TouchableOpacity
+                                onPress={handleToggleTracking}
+                                style={{
+                                    padding: 17,
+                                    backgroundColor: "transparent",
+                                    alignItems: "center",
+                                    borderRadius: 20,
+                                    borderWidth: 3,
+                                    borderColor: COLORS.GREEN,
+                                }}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator
+                                        color={COLORS.OFFWHITE}
+                                    />
+                                ) : (
+                                    <Text
+                                        style={{
+                                            color: COLORS.GREEN,
+                                            fontSize: 16,
+                                            fontWeight: "800",
+                                        }}
+                                    >
+                                        STOP AND FINISH
+                                    </Text>
+                                )}
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity
+                                onPress={handleToggleTracking}
+                                style={{
+                                    padding: 20,
+                                    backgroundColor: COLORS.GREEN,
+                                    alignItems: "center",
+                                    borderRadius: 20,
+                                }}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator
+                                        color={COLORS.OFFWHITE}
+                                    />
+                                ) : (
+                                    <Text
+                                        style={{
+                                            color: COLORS.OFFWHITE,
+                                            fontSize: 16,
+                                            fontWeight: "800",
+                                        }}
+                                    >
+                                        START
+                                    </Text>
+                                )}
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </>
+            )}
         </View>
     );
 }

@@ -18,6 +18,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FirebaseError } from "firebase/app";
+import moment from "moment";
 
 interface ActivityListProps {
     item: TrackingActivity;
@@ -129,17 +130,25 @@ export default function Tab2({ navigation }) {
                             color={COLORS.GREEN}
                         />
                     </View>
-                    <View style={{ gap: 15 }}>
+                    <View style={{ gap: 12 }}>
                         <View>
-                            <Text style={{ fontSize: 16, fontWeight: "600" }}>
-                                ID:{item.id}
+                            <Text style={{ fontSize: 16, fontWeight: "700" }}>
+                                {moment(item.startTime.seconds * 1000).format(
+                                    "ddd, MMM D YYYY h:mm A"
+                                )}
                             </Text>
-                            <Text>{item.startTime.toDate().toUTCString()}</Text>
+
+                            <Text style={{ fontSize: 14, fontStyle: "italic" }}>
+                                Mode of Transport:{" "}
+                                {item.vehicle.charAt(0).toUpperCase() +
+                                    item.vehicle.slice(1)}
+                            </Text>
                         </View>
                         <View
                             style={{
                                 flexDirection: "row",
                                 justifyContent: "space-between",
+                                marginTop: -5,
                             }}
                         >
                             <View style={{ gap: 1 }}>
@@ -233,7 +242,10 @@ export default function Tab2({ navigation }) {
                             )}
                         />
                     ) : (
-                        <Text>You currently have no activity</Text>
+                        <Text>
+                            You currently have no activity. {"\n"}Please Start
+                            `Track Now`.
+                        </Text>
                     )}
                 </>
             )}
