@@ -122,7 +122,9 @@ export default function Tab3({ navigation }) {
                     <ProfilePicture data={item} />
 
                     <Text style={{ fontSize: 14, fontWeight: "600" }}>
-                        {item.name}
+                        {item.name.length > 18
+                            ? `${item.name.substring(0, 18)}...`
+                            : item.name}
                     </Text>
                 </View>
 

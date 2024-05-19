@@ -100,7 +100,7 @@ const ProfileBottomSheetModal = forwardRef<Ref>((props, ref) => {
 
                 await updateDoc(userRef, {
                     profileImgURL: downloadURL,
-                    lastUpdate: new Date(),
+                    lastUpdated: new Date(),
                 });
 
                 const leaderboardRef = await doc(

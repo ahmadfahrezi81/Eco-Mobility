@@ -2,40 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Text,
-    Button,
+    TouchableOpacity,
     Dimensions,
     Image,
-    StyleSheet,
-    TouchableOpacity,
-    Share,
     Alert,
+    StyleSheet,
+    Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SubNavHeader from "../../components/top nav/SubNavHeader";
-import { COLORS, styles } from "../../styles";
-
-// import LogoLeaf from "../../assets/LogoLeaf.png";
-const Logo = require("../../assets/logo-leaf.png");
-const Sphere = require("../../assets/sphere.png");
-
-import {
-    Gesture,
-    GestureDetector,
-    GestureHandlerRootView,
-} from "react-native-gesture-handler";
-
-import Animated, {
-    Extrapolate,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from "react-native-reanimated";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
 import ViewShot, { captureRef } from "react-native-view-shot";
 import { Feather } from "@expo/vector-icons";
-import { blue } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+import SubNavHeader from "../../components/top nav/SubNavHeader";
+import { COLORS, styles } from "../../styles";
+import { getAllFromAsyncStorage } from "../../helpers/getAllFromAsyncStorage";
+
+const Logo = require("../../assets/logo-leaf.png");
+const Sphere = require("../../assets/sphere.png");
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const HEIGHT = 480;
@@ -69,106 +54,54 @@ export default function Certificate({ navigation }) {
         fetchData();
     }, []);
 
-    //animation
-
-    const rotateX = useSharedValue(0);
-    const rotateY = useSharedValue(0);
-
-    const gesture = Gesture.Pan()
-        .onBegin((event) => {
-            rotateX.value = withTiming(
-                interpolate(
-                    event.y,
-                    [0, CARD_HEIGHT],
-                    [2, -2],
-                    Extrapolate.CLAMP
-                )
-            );
-            rotateY.value = withTiming(
-                interpolate(
-                    event.x,
-                    [0, CARD_WIDTH],
-                    [-2, 2],
-                    Extrapolate.CLAMP
-                )
-            );
-        })
-        .onUpdate((event) => {
-            // topLeft (10deg, -10deg)
-            // topRight (10deg, 10deg)
-            // bottomRight (-10deg, 10deg)
-            // bottomLeft (-10deg, -10deg)
-
-            rotateX.value = interpolate(
-                event.y,
-                [0, CARD_HEIGHT],
-                [2, -2],
-                Extrapolate.CLAMP
-            );
-            rotateY.value = interpolate(
-                event.x,
-                [0, CARD_WIDTH],
-                [-2, 2],
-                Extrapolate.CLAMP
-            );
-        })
-        .onFinalize(() => {
-            rotateX.value = withTiming(0);
-            rotateY.value = withTiming(0);
-        });
-
-    // const rStyle = useAnimatedStyle(() => {
-    //     const rotateXvalue = `${rotateX.value}deg`;
-    //     const rotateYvalue = `${rotateY.value}deg`;
-
-    //     return {
-    //         transform: [
-    //             {
-    //                 perspective: 300,
-    //             },
-    //             { rotateX: rotateXvalue },
-    //             { rotateY: rotateYvalue },
-    //         ],
-    //     };
-    // }, []);
-
     const viewShotRef = useRef();
 
-    // const shareImage = async () => {
-    //     try {
-    //         const imageURI = await viewShotRef.current.capture();
+    // const [imageUri, setImageUri] = useState(
+    //     "https://images.unsplash.com/photo-1715966966827-25a227141ee9?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    // );
 
-    //         await Share.share({
-    //             url: imageURI,
-    //         });
-    //     } catch (error) {
-    //         console.log("Error sharing image: ", error);
-    //     }
-    // };
+    const shareImage = async () => {
+        try {
+            const imageUri = await captureRef(viewShotRef, {
+                format: "jpg",
+                quality: 1,
+            });
 
-    // const onShare = async () => {
-    //     try {
-    //         const result = await Share.share({
-    //             message:
-    //                 "React Native | A framework for building native apps using React",
-    //         });
-    //         if (result.action === Share.sharedAction) {
-    //             if (result.activityType) {
-    //                 // shared with activity type of result.activityType
-    //             } else {
-    //                 // shared
-    //             }
-    //         } else if (result.action === Share.dismissedAction) {
-    //             // dismissed
-    //         }
-    //     } catch (error: any) {
-    //         Alert.alert(error.message);
-    //     }
-    // };
+            console.log(imageUri);
+
+            // Create file URI for sharing
+            const fileUri = FileSystem.documentDirectory + "image.jpg";
+
+            // Move the captured image to the file URI
+            await FileSystem.moveAsync({
+                from: imageUri,
+                to: fileUri,
+            });
+
+            // Share the image using expo-sharing
+            await Sharing.shareAsync(fileUri);
+
+            // const downloadResumable = FileSystem.createDownloadResumable(
+            //     imageUri,
+            //     FileSystem.documentDirectory + "image.jpg"
+            // );
+
+            // const { uri } = await downloadResumable.downloadAsync();
+
+            // if (!(await Sharing.isAvailableAsync())) {
+            //     alert(`Uh oh, sharing isn't available on your platform`);
+            //     return;
+            // }
+
+            // await Sharing.shareAsync(uri);
+        } catch (error) {
+            console.error("Error sharing image", error);
+        }
+    };
 
     const Certificate = () => {
         return (
-            <View
+            <ViewShot
                 ref={viewShotRef}
                 style={[
                     {
@@ -284,180 +217,71 @@ export default function Certificate({ navigation }) {
                         right: 20,
                     }}
                 />
-
-                <View
-                    style={{
-                        position: "absolute",
-                        bottom: "10%",
-                        left: "10%",
-                        flexDirection: "row",
-                    }}
-                ></View>
-            </View>
+            </ViewShot>
         );
     };
 
-    const onShare = async () => {
-        try {
-            const uri = await captureRef(viewShotRef, {
-                format: "png",
-                quality: 1,
-            });
+    // const onShare = async () => {
+    //     try {
+    //         const result = await Share.share({
+    //             message: "Check out this awesome link https://www.google.com",
+    //         });
 
-            const result = await Share.share({
-                url: uri,
-            });
+    //         if (result.action === Share.sharedAction) {
+    //             if (result.activityType) {
+    //                 console.log(
+    //                     "Shared with activity type:",
+    //                     result.activityType
+    //                 );
+    //             } else {
+    //                 console.log("Shared successfully");
+    //             }
+    //         } else if (result.action === Share.dismissedAction) {
+    //             console.log("Share dismissed");
+    //         }
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+    // };
 
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-        } catch (error: any) {
-            Alert.alert(error.message);
-        }
-    };
+    // const onShare = async () => {
+    //     try {
+    //         if (viewShotRef.current) {
+    //             const uri = await captureRef(viewShotRef.current, {
+    //                 format: "jpg",
+    //                 quality: 1,
+    //             });
+
+    //             const fileUri =
+    //                 FileSystem.documentDirectory + "certificate.jpg";
+    //             await FileSystem.writeAsStringAsync(fileUri, uri, {
+    //                 encoding: FileSystem.EncodingType.Base64,
+    //             });
+
+    //             if (await Sharing.isAvailableAsync()) {
+    //                 await Sharing.shareAsync(fileUri);
+    //             } else {
+    //                 Alert.alert("Sharing is not available on your platform");
+    //             }
+    //         } else {
+    //             Alert.alert("No certificate to share.");
+    //         }
+    //     } catch (error) {
+    //         Alert.alert(error.message);
+    //     }
+    // };
 
     return (
+        // <View style={styles.container}>
+        //     <Image source={{ uri: imageUri }} style={styles.image} />
+        //     <Button title="Share Image" onPress={shareImage} />
+        // </View>
         <SafeAreaView edges={["right", "left", "top"]} style={styles.container}>
             <SubNavHeader navigation={navigation} title={"Certificate"} />
             <View style={{ display: "flex", gap: 20 }}>
-                {/* <View style={{ gap: 10 }}>
-                    <GestureDetector gesture={gesture}>
-                        <Animated.View
-                            style={[
-                                {
-                                    height: CARD_HEIGHT,
-                                    width: CARD_WIDTH,
-                                    backgroundColor: COLORS.GREEN,
-                                    position: "absolute",
-                                    borderRadius: 15,
-                                    zIndex: 300,
-                                    padding: 25,
-                                    gap: 50,
-                                    alignItems: "center",
-                                },
-                                rStyle,
-                            ]}
-                        >
-                            <Image
-                                source={Sphere}
-                                style={{
-                                    width: 220,
-                                    height: 220,
-                                    marginTop: 20,
-                                }}
-                            />
-                            <View
-                                style={{
-                                    position: "absolute",
-                                    left: 20,
-                                    bottom: 100,
-                                }}
-                            >
-                                <Text
-                                    style={{
-                                        color: COLORS.OFFWHITE,
-                                        fontSize: 28,
-                                        fontWeight: "700",
-                                    }}
-                                >
-                                    {name}
-                                </Text>
-                                <Text
-                                    style={{
-                                        color: COLORS.OFFWHITE,
-                                        fontSize: 16,
-                                        fontWeight: "600",
-                                    }}
-                                >
-                                    Early Adopter
-                                </Text>
-                            </View>
-
-                            <View
-                                style={{
-                                    borderWidth: 1.5,
-                                    padding: 5,
-                                    paddingHorizontal: 10,
-                                    borderColor: COLORS.OFFWHITE,
-                                    alignSelf: "flex-start",
-                                    borderRadius: 5,
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    gap: 10,
-                                    position: "absolute",
-                                    bottom: 20,
-                                    left: 20,
-                                }}
-                            >
-                                <Text
-                                    style={{
-                                        color: COLORS.OFFWHITE,
-                                        fontWeight: "600",
-                                        fontSize: 13,
-                                    }}
-                                >
-                                    UM-Eco Mobility
-                                </Text>
-                                <View
-                                    style={{
-                                        backgroundColor: COLORS.OFFWHITE,
-                                        borderRadius: 10,
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            color: COLORS.OFFWHITE,
-                                            fontSize: 6,
-                                        }}
-                                    >
-                                        |
-                                    </Text>
-                                </View>
-                                <Text
-                                    style={{
-                                        color: COLORS.OFFWHITE,
-                                        fontSize: 13,
-                                        fontWeight: "600",
-                                    }}
-                                >
-                                    {new Date(
-                                        joinedDate * 1000
-                                    ).toLocaleDateString()}
-                                </Text>
-                            </View>
-
-                            <Image
-                                source={Logo}
-                                style={{
-                                    width: 30,
-                                    height: 30,
-                                    position: "absolute",
-                                    bottom: 20,
-                                    right: 20,
-                                }}
-                            />
-
-                            <View
-                                style={{
-                                    position: "absolute",
-                                    bottom: "10%",
-                                    left: "10%",
-                                    flexDirection: "row",
-                                }}
-                            ></View>
-                        </Animated.View>
-                    </GestureDetector>
-                </View> */}
-
                 <Certificate />
                 <TouchableOpacity
-                    onPress={onShare}
+                    onPress={shareImage}
                     style={{
                         marginTop: 500,
                     }}
@@ -483,3 +307,16 @@ export default function Certificate({ navigation }) {
         </SafeAreaView>
     );
 }
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: "center",
+//         alignItems: "center",
+//     },
+//     image: {
+//         width: 300,
+//         height: 300,
+//         marginBottom: 20,
+//     },
+// });

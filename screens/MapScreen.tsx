@@ -184,9 +184,15 @@ export default function MapScreen({ navigation }) {
                 await updateDoc(leaderboardRef, {
                     xp: increment(10),
                 });
+
+                //update the last update.
+                await updateDoc(userRef, {
+                    lastUpdated: new Date(),
+                });
+
                 //later on I need a way to calculate the xp and emission using helper class
 
-                console.log("[DATA SENT]", trackingActivitiesRef);
+                // console.log("[DATA SENT]", trackingActivitiesRef);
 
                 setLoading(false);
                 navigation.navigate("ReportSummary", { data: data });

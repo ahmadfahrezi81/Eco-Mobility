@@ -1,4 +1,5 @@
 import {
+    ActivityIndicator,
     KeyboardAvoidingView,
     Text,
     TouchableOpacity,
@@ -20,6 +21,8 @@ const SignInScreen = ({ navigation }) => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const auth = FIREBASE_AUTH;
+
+    // const [checkingLogin, setCheckingLogin] = useState(true); // Added state for checking login
 
     useEffect(() => {
         restoreSession();
@@ -82,10 +85,10 @@ const SignInScreen = ({ navigation }) => {
                 } catch (e) {
                     console.log(e);
 
-                    console.log("hello");
                     // Handle the error appropriately, e.g. clear the stored credentials
                 }
             }
+            // setCheckingLogin(false); // Update state after checking login
         } catch (e) {
             console.log(e);
         }
@@ -93,46 +96,53 @@ const SignInScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={[styles.container, { gap: 20 }]}>
-            <Text style={styles.title}>Sign In</Text>
-            {/* <KeyboardAvoidingView behavior="padding"> */}
-            <View style={{ gap: 10 }}>
-                <InputWithLabel
-                    text={"Email"}
-                    value={email}
-                    placeholder={"Type your Email"}
-                    onChangeText={(e) => setEmail(e)}
-                />
-                <InputWithLabel
-                    text={"Password"}
-                    value={password}
-                    forPassword={true}
-                    placeholder={"Type your password"}
-                    onChangeText={(e) => setPassword(e)}
-                />
-            </View>
-            <LoadButton onPress={signIn} loading={loading} text="Sign In" />
+            <>
+                <Text style={styles.title}>Sign In</Text>
+                {/* <KeyboardAvoidingView behavior="padding"> */}
+                <View style={{ gap: 10 }}>
+                    <InputWithLabel
+                        text={"Email"}
+                        value={email}
+                        placeholder={"Type your Email"}
+                        onChangeText={(e) => setEmail(e)}
+                    />
+                    <InputWithLabel
+                        text={"Password"}
+                        value={password}
+                        forPassword={true}
+                        placeholder={"Type your password"}
+                        onChangeText={(e) => setPassword(e)}
+                    />
+                </View>
+                <LoadButton onPress={signIn} loading={loading} text="Sign In" />
 
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={{ fontSize: 15 }}>Don’t have an account?</Text>
-                <TouchableOpacity
-                    style={{ marginLeft: 2 }}
-                    onPress={() =>
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: "SignUp" }],
-                        })
-                    }
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                    }}
                 >
-                    <Text
-                        style={{
-                            fontSize: 15,
-                            textDecorationLine: "underline",
-                        }}
+                    <Text style={{ fontSize: 15 }}>Don’t have an account?</Text>
+                    <TouchableOpacity
+                        style={{ marginLeft: 2 }}
+                        onPress={() =>
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: "SignUp" }],
+                            })
+                        }
                     >
-                        Sign Up
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                        <Text
+                            style={{
+                                fontSize: 15,
+                                textDecorationLine: "underline",
+                            }}
+                        >
+                            Sign Up
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </>
 
             {/* </KeyboardAvoidingView> */}
         </SafeAreaView>
