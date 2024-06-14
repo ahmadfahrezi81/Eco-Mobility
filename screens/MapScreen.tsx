@@ -128,8 +128,6 @@ export default function MapScreen({ navigation }) {
 
     const mapRef = useRef<MapView>(null);
 
-    // useUserLocationChange(() => {});
-
     const addDataToFirestore = async ({
         distance,
         startTime,
@@ -206,24 +204,6 @@ export default function MapScreen({ navigation }) {
         if (isTracking) {
             const { latitude, longitude } = event.nativeEvent.coordinate;
             setCurrentLocation({ latitude, longitude });
-
-            // if (mapRef.current) {
-            //     mapRef.current.animateToRegion({
-            //         latitude,
-            //         longitude,
-            //         latitudeDelta: 0.0922,
-            //         longitudeDelta: 0.0421,
-            //     });
-            // }
-
-            //if possible this should only ran sometimes
-            // setCurrentMovementTrails((prevTrail) => [
-            //     ...prevTrail,
-            //     { latitude, longitude },
-            // ]);
-
-            // const distance = calculateTotalDistance(currentMovementTrails);
-            // setTotalDistance(distance);
 
             debounce(
                 () => {
