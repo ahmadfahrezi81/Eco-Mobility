@@ -1,4 +1,4 @@
-# Eco-Mobility
+# Eco-Mobility 🍃
 
 Eco-Mobility is a mobile application designed to promote eco-friendly transportation habits among users. The app tracks various activities, calculates CO2 emissions, and provides insightful charts and summaries to help users understand their environmental impact.
 
@@ -20,44 +20,45 @@ Eco-Mobility is a mobile application designed to promote eco-friendly transporta
 ## Installation
 
 1. Clone the repository:
-    ```sh
-    mkdir eco-mobility
-    cd eco-mobility
-    ```
 
-    ```sh
-    git clone https://github.com/ahmadfahrezi81/Eco-Mobility.git
-    ```
+   ```sh
+   mkdir eco-mobility
+   cd eco-mobility
+   ```
 
+   ```sh
+   git clone https://github.com/ahmadfahrezi81/Eco-Mobility.git
+   ```
 2. Install dependencies:
-    You can use either ⁠npm or ⁠pnpm to install the dependencies. Here are the commands for each:
-    
-    Using PNPM:
-    ```sh
-    pnpm install
-    ```
-    
-    Alternatively, using NPM:
-    ```sh
-    npm install
-    ```
+   You can use either ⁠npm or ⁠pnpm to install the dependencies. Here are the commands for each:
 
+   Using PNPM:
 
+   ```sh
+   pnpm install
+   ```
+
+   Alternatively, using NPM:
+
+   ```sh
+   npm install
+   ```
 3. Set up environment variables:
-    Create a [.env](http://_vscodecontentref_/0) file in the root directory and add your Firebase configuration:
-    ```env
-    API_KEY=your_api_key
-    AUTH_DOMAIN=your_auth_domain
-    PROJECT_ID=your_project_id
-    STORAGE_BUCKET=your_storage_bucket
-    MESSAGING_SENDER_ID=your_messaging_sender_id
-    APP_ID=your_app_id
-    ```
+   Create a [.env](http://_vscodecontentref_/0) file in the root directory and add your Firebase configuration:
 
+   ```env
+   API_KEY=your_api_key
+   AUTH_DOMAIN=your_auth_domain
+   PROJECT_ID=your_project_id
+   STORAGE_BUCKET=your_storage_bucket
+   MESSAGING_SENDER_ID=your_messaging_sender_id
+   APP_ID=your_app_id
+   ```
 4. Start the application:
-    ```sh
-    npm start
-    ```
+
+   ```sh
+   npx run dev
+   ```
 
 ## Usage
 
@@ -69,7 +70,21 @@ Eco-Mobility is a mobile application designed to promote eco-friendly transporta
 
 ## Screenshots
 
-!Screenshot
+### Tracking
+
+![Eco-Mobility Tracking](public/images/Screenshot-Tracking.png)
+
+### Main Screen
+
+![Eco-Mobility Main Pages](public/images/Screenshot-HomePage.png)
+
+### Dashboard
+
+![Eco-Mobility Dashboard](public/images/Screenshot-Dashboard.png)
+
+### Activity
+
+![Eco-Mobility Activity](public/images/Screenshot-Activity.png)
 
 ## Contributing
 
@@ -79,14 +94,14 @@ We welcome contributions! Please read our Contributing Guidelines for more detai
 
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix:
-    ```sh
-    git checkout -b feature/your-feature-name
-    ```
+   ```sh
+   git checkout -b feature/your-feature-name
+   ```
 3. Make your changes and commit them with clear and concise messages.
 4. Push your changes to your forked repository:
-    ```sh
-    git push origin feature/your-feature-name
-    ```
+   ```sh
+   git push origin feature/your-feature-name
+   ```
 5. Create a pull request to the main repository. Provide a detailed description of your changes and any related issues.
 
 ## License
