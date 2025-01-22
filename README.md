@@ -1,12 +1,9 @@
 # Eco-Mobility 🍃
 
 Eco-Mobility is a mobile application designed to promote eco-friendly transportation habits among users. The app tracks various activities, calculates CO2 emissions, and provides insightful charts and summaries to help users understand their environmental impact.
-
 ### Project Demo
 
-Check out our video demonstration below to see the project in action.
-
-<iframe src="https://drive.google.com/file/d/1uZuzMDYD8rTO7otuSTFCPDF7vLcXapGo/preview" width="640" height="480" allow="autoplay"></iframe>
+Check out our [video demonstration](https://drive.google.com/file/d/1uZuzMDYD8rTO7otuSTFCPDF7vLcXapGo/view) to see the project in action.
 
 ## Features
 
