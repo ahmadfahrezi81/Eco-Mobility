@@ -1,6 +1,6 @@
-# UM Eco-Mobility
+# Eco-Mobility
 
-UM Eco-Mobility is a mobile application designed to promote eco-friendly transportation habits among users. The app tracks various activities, calculates CO2 emissions, and provides insightful charts and summaries to help users understand their environmental impact.
+Eco-Mobility is a mobile application designed to promote eco-friendly transportation habits among users. The app tracks various activities, calculates CO2 emissions, and provides insightful charts and summaries to help users understand their environmental impact.
 
 ## Features
 
@@ -31,6 +31,7 @@ UM Eco-Mobility is a mobile application designed to promote eco-friendly transpo
 
 2. Install dependencies:
     You can use either ⁠npm or ⁠pnpm to install the dependencies. Here are the commands for each:
+    
     Using PNPM:
     ```sh
     pnpm install
@@ -63,7 +64,8 @@ UM Eco-Mobility is a mobile application designed to promote eco-friendly transpo
 1. Sign up or log in using your email.
 2. Start tracking your activities.
 3. View your CO2 emissions and other statistics in the charts.
-4. Manage your profile and view your achievements.
+4. Manage your profile.
+5. Check the leaderboard to see how you rank against other users.
 
 ## Screenshots
 
@@ -72,6 +74,20 @@ UM Eco-Mobility is a mobile application designed to promote eco-friendly transpo
 ## Contributing
 
 We welcome contributions! Please read our Contributing Guidelines for more details.
+
+## Contributing Guidelines
+
+1. Fork the repository.
+2. Create a new branch for your feature or bugfix:
+    ```sh
+    git checkout -b feature/your-feature-name
+    ```
+3. Make your changes and commit them with clear and concise messages.
+4. Push your changes to your forked repository:
+    ```sh
+    git push origin feature/your-feature-name
+    ```
+5. Create a pull request to the main repository. Provide a detailed description of your changes and any related issues.
 
 ## License
 
