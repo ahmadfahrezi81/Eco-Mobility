@@ -1,5 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, Button, TouchableOpacity, StatusBar } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+    View,
+    Text,
+    Button,
+    TouchableOpacity,
+    StatusBar,
+    Animated,
+} from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { FIREBASE_APP, FIRESTORE_DB } from "../firebaseConfig";
 import {
@@ -109,6 +116,18 @@ export default function Tab1({ navigation }) {
     function handleError(error: FirebaseError) {
         console.error("Error received in snapshot listener", error);
     }
+
+    // const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    // const onPressTrackNowWithAnimation = () => {
+    //     Animated.timing(fadeAnim, {
+    //         toValue: 1,
+    //         duration: 5000,
+    //         useNativeDriver: true,
+    //     }).start(() => {
+    //         navigation.navigate("Map");
+    //     });
+    // };
 
     return (
         <SafeAreaView
@@ -272,8 +291,10 @@ export default function Tab1({ navigation }) {
                     </TouchableOpacity>
 
                     {/* Track Button */}
+                    {/* <Animated.View style={{ opacity: fadeAnim }}> */}
                     <TouchableOpacity
                         onPress={() => navigation.navigate("Map")}
+                        // onPress={onPressTrackNowWithAnimation}
                     >
                         <View
                             style={{
@@ -304,6 +325,7 @@ export default function Tab1({ navigation }) {
                             />
                         </View>
                     </TouchableOpacity>
+                    {/* </Animated.View> */}
                 </>
             )}
         </SafeAreaView>
