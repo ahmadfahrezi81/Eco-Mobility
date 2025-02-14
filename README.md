@@ -20,6 +20,25 @@ Check out our [video demonstration](https://drive.google.com/file/d/1uZuzMDYD8rT
 - **Expo**: For development and deployment.
 - **TypeScript**: For type-safe JavaScript.
 
+## Screenshots
+
+### Main Screen
+
+![Eco-Mobility Main Pages](public/images/Screenshot-HomePage.png)
+
+### Dashboard
+
+![Eco-Mobility Dashboard](public/images/Screenshot-Dashboard.png)
+
+### Tracking
+
+![Eco-Mobility Tracking](public/images/Screenshot-Tracking.png)
+
+### Activity
+
+![Eco-Mobility Activity](public/images/Screenshot-Activity.png)
+
+
 ## Installation
 
 1. Clone the repository:
@@ -70,24 +89,6 @@ Check out our [video demonstration](https://drive.google.com/file/d/1uZuzMDYD8rT
 3. View your CO2 emissions and other statistics in the charts.
 4. Manage your profile.
 5. Check the leaderboard to see how you rank against other users.
-
-## Screenshots
-
-### Main Screen
-
-![Eco-Mobility Main Pages](public/images/Screenshot-HomePage.png)
-
-### Dashboard
-
-![Eco-Mobility Dashboard](public/images/Screenshot-Dashboard.png)
-
-### Tracking
-
-![Eco-Mobility Tracking](public/images/Screenshot-Tracking.png)
-
-### Activity
-
-![Eco-Mobility Activity](public/images/Screenshot-Activity.png)
 
 ## Contributing
 
